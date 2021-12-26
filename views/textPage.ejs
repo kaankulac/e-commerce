@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Page</title>
+
+</head>
+<body>
+    <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    <link rel="stylesheet" href="/css/textPage.css" type="text/css">
+
+
+        From
+        <%= user.fullName %> 
+        To
+        <%= store.storeName %>
+        <div align="center">
+
+
+        <% for( let i = 0; i < messages.length; i++ ) { %>
+                <% if (messages[i].isAnswer) { %>
+                    <div class="container1" style="width:700px;">
+                        <h6><%= store.storeName %> </h6>
+                        <p><%= messages[i].message %></p>
+                        <span class="time-right"><%= messages[i].createdAt %></span>
+                      </div>
+                <% }else{ %>
+                    <div class="container1 darker" style="width:700px;">
+
+                        <h6 class="right"><%= user.fullName %> </h6>
+                        <p><%= messages[i].message %></p>
+                        <span class="time-left"><%= messages[i].createdAt %></span>
+                      </div>
+                    <% } %> 
+        <% } %>
+    </div>
+
+
+<div>
+    <form method="POST">
+        <input type="text" name="message" id="" placeholder="Your Message">
+        <button type="submit">Send</button>
+
+    </form>
+</div>
+
+</body>
+</html>

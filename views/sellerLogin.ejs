@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Login</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+
+</head>
+<body>
+    
+    <div align="center">
+        <% if(message===""){ %>
+                
+            <%} else if(message=="User does not exists!"){ %> 
+                <div style="width:250px" class="alert alert-warning" role="alert">
+                    <%- message %> 
+    
+                  </div>
+
+            <%}else if(message=="Success!"){ %> 
+                <div style="width:250px" class="alert alert-success" role="alert">
+                    <%- message %> 
+    
+                  </div>
+            <%}else{ %> 
+                <div style="width:250px" class="alert alert-danger" role="alert">
+                    <%- message %> 
+    
+                  </div>
+                <% } %> 
+
+
+        <h1>Seller Login</h1>
+
+        <form class="mb-3" action="/login/seller" method="POST">
+
+            <div>
+                <input class="form-control" type="text" name="username" id="" placeholder="Username" required>
+            </div>
+            <div>
+                <input class="form-control" type="password" name="password" id="" placeholder="Password" required>
+            </div>
+            <br>
+    
+            <button class="btn btn-primary" type="submit">Login</button>
+
+
+        </form>
+    </div>
+
+</body>
+</html>

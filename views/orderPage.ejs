@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+</head>
+<body>
+    <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    
+    <% if (user==="user") { %>
+        <% for( let i = 0; i < orders.length; i++ ) { %>
+            <p>Product Name: <%= products[i].productName %> </p>
+            <p>Amount: <%= orders[i].amount %> </p>
+            <p>Total Price: <%= orders[i].totalPrice %> </p>
+            <br>
+        <% } %>
+    <% }else{ %>
+        <% for( let i = 0; i < orders.length; i++ ) { %>
+            <p>Product Name: <%= products[i].productName %> </p>
+            <p>Amount: <%= orders[i].amount %> </p>
+            <p>Total Price: <%= orders[i].totalPrice %> </p>
+
+            <button><a href="/order/complete/<%= orders[i].id %> ">Complete Order</a></button>
+            <button><a href="/order/cancel/<%= orders[i].id %> ">Cancel Order</a></button>
+            <br>
+        <% } %>
+    <% } %> 
+<button><a href="/orders/completed">Completed Orders</a></button>
+<button><a href="/orders/cancelled">Cancelled Orders</a></button>
+
+    
+</body>
+</html>

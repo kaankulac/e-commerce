@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+</head>
+<body>
+    <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    <% if (haveAdress) { %>
+        
+        <%= user.adress %>
+        <form action="/profile/change/adress/delete" method="POST">
+            <button type="submit">Delete Adress</button>
+        </form>
+        <form action="/profile/change/adress/edit" method="POST">
+            <input type="text" name="cadress" placeholder="Adress" required>
+            <button type="submit">Change Adress</button>
+        </form>
+
+
+    <% }else{ %>
+        <form action="/profile/change/adress/add" method="POST">
+            <p>You don't have an adress. Please add one...</p>
+            <input type="text" name="adress" placeholder="Adress" required>
+            <button type="submit">Add Adress</button>
+        </form>
+    <% } %> 
+</body>
+</html>

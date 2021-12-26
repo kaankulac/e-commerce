@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= user.username %> </title>
+</head>
+<body>
+    <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    
+    <% if (type==="user") { %>      
+        <h2>Username: <%= user.username %> </h2>
+        <p>Full Name: <%= user.fullName %> </p>
+        <p>Email: <%= user.email %> </p>
+        <button><a href="profile/change/email">Change Email</a></button>
+        <p>Adress: <%= user.adress %> </p>
+        <button><a href="profile/change/adress">Edit or Add Adress</a></button>
+        <h1>Security</h1>
+        <p>Password</p>
+        <button><a href="profile/change/password">Change Password</a></button>
+        <h1>Payment Methods</h1>
+        <% if (pMethod) { %>
+            <p>Card Number: <%= pMethod.cardNumber %> </p>
+            <p>CVV: <%= pMethod.cvv %>  </p>
+            <p>Exprition Date: <%= pMethod.expritionDate %> </p>
+            <form action="/profile/change/paymentmethod/delete" method="POST">
+                <button type="submit">Delete Payment Method</button>
+            </form>
+        <% }else{ %>
+            <p>You don't have a payment method. Please add one...</p>
+            <button><a href="profile/change/paymentmethod">Add Payment Method</a></button>
+            <% } %> 
+
+    <% }else{ %>
+
+        <h2>Username: <%= user.username %> </h2>
+        <p>Email: <%= user.email %> </p>
+        <button><a href="profile/change/email">Change Email</a></button>
+        <p>Adress: <%= user.adress %> </p>
+        <button><a href="profile/change/adress">Edit or Add Adress</a></button>
+        <h1>Security</h1>
+        <p>Password</p>
+        <button><a href="profile/change/password">Change Password</a></button>
+    <% } %> 
+</body>
+</html>

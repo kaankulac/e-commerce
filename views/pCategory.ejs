@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    <h2>You are seeing products whose category is <%= category.categoryName.toLowerCase() %>   </h2>
+    <main>
+
+        <div class="album py-5 bg-light">
+          <div class="container">
+      
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <% for(var i = 0; i<products.length; i++){ %> 
+              <div class="col">
+                <div class="card shadow-sm">
+                  <!-- <svg class="bd-placeholder-img card-img-top" width="100" height="450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"></svg> -->
+                  <img src="<%= images[i] %>" align="center" width="250"  height="400" alt="Thumbnail" style="display: block;margin-left:auto;margin-right:auto;width:400">
+                  <div class="card-body">
+                    <p class="card-text" style="font-size:25px;"><strong><a href= <%-url(products[i].id,products[i].productName) %> style="text-decoration:none;color:black;"><%= products[i].productName %></a></strong>  </p>
+                    <p class="card-text" style="font-size: 22px;"><%= products[i].description %> </p>
+                    <p class="card-text" style="text-align: right;font-size:20px;">Price: <%= products[i].price %> $ </p>
+                    <% stores.forEach(element => { %>
+                        <% if(element.id === products[i].storeId){ %>
+                    <p class="card-text" style="text-align: left;font-size:20px;">Seller: <a href="/store/<%= element.pathName %>" style="text-decoration:none;"> <%= element.storeName %></a>  </p>
+    
+                          <% } %>  
+                    <% }) %>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">See</button>
+                        <form method="POST">
+                            <button type="submit" name="button" value="<%= products[i].id %> "class="btn btn-sm btn-outline-secondary">Favorite</button>
+                        </form>
+                      </div>
+                      <small class="text-muted"><p id="date"><%-parseInt(((Date.now()-new Date(products[i].createdAt).getTime())/86400000)*24) %> hours ago </p>   </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        <% } %> 
+                </div>
+              </div>
+            </div>
+</body>
+</html>

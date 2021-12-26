@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopcart</title> 
+</head>
+<body>
+    <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    <div align="center">
+
+    <% for( let i = 0; i < products.length; i++ ) { %>
+        <form action="/shopcart/<%= shopcart[i].id %> " method="POST">
+            
+            <div style="float:left;padding:20px;" >
+                <h1  id = "<% products[i].productName %>" ><%= products[i].productName %> </h1>
+                <p>Price: <%= products[i].price %> </p>
+                <p>Total Price: <%= shopcart[i].totalPrice %> </p>
+                <div>
+                    <p >Amount:&nbsp;</p><p  id="<%= shopcart[i].productId %>"name=" " id="amount"><%= shopcart[i].amount %> </p>
+                    <button type="submit" value="<%= shopcart[i].productId %> " onclick="addAmount(this,'<%= products[i].productName %>' )" >+</button>
+                </div>
+            </div>
+            <input id = "haha" style="visibility: hidden;" type="text" name="<%=products[i].productName%>">
+        </form>
+        
+
+    <% } %>
+    <form action="shopcart/order" method="POST">
+        <button type="submit">Order</button>
+    </form>
+    
+</div>
+
+</body>
+</html>
+<script>
+    txt.style.visibility = "hidden";
+    function addAmount(x,name){
+        var value = x.value;
+        var p = document.getElementById(parseInt(value));
+        var txt = document.getElementsByName(name);
+        p.innerHTML = parseInt(p.innerHTML) + 1
+        txt[0].value = p.innerHTML
+    };
+        
+        
+        
+         
+
+    
+</script>

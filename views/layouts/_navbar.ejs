@@ -1,0 +1,129 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<link rel="stylesheet" href="/css/_navbarcss.css" type="text/css">
+<nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">E-Commerce</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <% if (isAuthenticated) { %>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active" id="home">
+          <a class="nav-link" href="/">
+            <i class="fa">
+              <img src="/img/home.png" style="height:30px;width:30px" alt="">
+            </i>
+            Home
+            </a>
+        </li>
+        <li class="nav-item" id="categories">
+          <a class="nav-link" href="/categories">
+            <i class="fa">
+              <img src="/img/category.png" style="height:30px;width:30px" alt="">
+            </i>
+            Categories
+          </a>
+        </li>
+        <li class="nav-item" id="orders">
+          <a class="nav-link" href="/orders">
+            <i class="fa">
+              <img style="height:30px;width:30px" src="/img/order.png" alt="">
+            </i>
+            Orders
+
+            </a>
+        </li>
+        <li class="nav-item" id="shopcart">
+          <a class="nav-link" href="/shopcart">
+            <i class="fa">
+              <img src="/img/shopping-cart.png" style="height:30px;width:30px" alt="">
+            </i>
+            Shopcart
+            </a>
+        </li>
+        <li class="nav-item">
+          <div class="dropdown fa">
+            <button class="dropbtn fa"><img style="height:30px;width:30px" src="/img/profile.png" alt=""><br> Profile</button>    
+            <div class="dropdown-content">
+              <a href="/profile">Profile Page</a>
+              <a href="/logout">Logout</a>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+      <ul class="navbar-nav ">
+        <li class="nav-item">
+          <a class="nav-link" href="/notifications">
+            <i class="fa fa-bell">
+              <span class="badge badge-info">11</span> <!-- Dinamik bir şekilde bildirim sayısı yazıcak bildirimler için databasede tablo oluşturulacak... Admin hesapları bütün hesaplara bildirim gönderebilecek herkesi kapsayan ayrı bir id olacak. -->
+            </i>
+            Notifications
+          </a>
+        </li>
+      </ul>
+      <form action = "/search" class="form-inline my-2 my-lg-0" method="GET" id="sBarForm">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="sBar" onkeydown="key_down()" id = 'sBar'>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="searchFunc()">Search</button>
+      </form>
+    </div>
+  <% }else{ %>
+    <div style="float:right;position:absolute;right:10px">
+      <button class="btn btn-outline-success my-2 my-sm-0"><a href="/login/user" style="color:green;">Login</a></button>
+      &nbsp;
+      <button class="btn btn-outline-success my-2 my-sm-0"><a href="/register" style="color:orange;">Register</a></button>
+    </div>
+
+
+    <% } %> 
+
+  
+</nav>
+
+
+<script>
+
+  key_down = (e) => {
+    if(e.keyCode === 13) {
+      searchFunc();
+    }
+  }
+
+
+  searchFunc = () => {
+    var sForm = document.getElementById('sBarForm');
+    var sBar = document.getElementById('sBar');
+
+    var value = sBar.value.replaceAll(' ','+');
+
+    sForm.action = '/search/'+value
+
+  }
+  
+  var home = document.getElementById('home');
+  var categories = document.getElementById('categories');
+  var orders = document.getElementById('orders');
+  var shopcart = document.getElementById('shopcart');
+  var paths = [home,categories,orders,shopcart]
+  const url = document.URL;
+
+  if(url.indexOf('categories')>-1){
+    categories.className = "nav-item active";
+    home.className = "nav-item";
+    shopcart.className = "nav-item";
+    orders.className = "nav-item";
+  }else if(url.indexOf('orders')>-1){
+    categories.className = "nav-item";
+    home.className = "nav-item";
+    shopcart.className = "nav-item";
+    orders.className = "nav-item active";
+  }else if(url.indexOf('shopcart')>-1){
+    categories.className = "nav-item";
+    home.className = "nav-item";
+    shopcart.className = "nav-item active";
+    orders.className = "nav-item";
+  }
+</script>

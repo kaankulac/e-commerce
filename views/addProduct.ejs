@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+
+</head>
+<body>
+<!-- <button type="button" value="Add" id="denemeid" onclick="deneme()" > -->
+    <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+
+    <% if(isAuthenticated){ %>
+        <% if(session.type==="seller"){ %> 
+            <p><strong>Store ID: <%= session.user.storeId %> </strong></p>
+     
+            <div align="center">
+                <p>Welcome <%= session.user.username %> </p>
+                <form class="mb-3" action="/management/product/add" method="POST">
+                    <div>
+                        <input class="form-control" type="text" name="pname" id="" placeholder="Product Name" required>
+                    </div>
+                    <div>
+                        <input class="form-control" type="text" name="price" id="" placeholder="Price" required>
+                    </div>
+                    <div>
+                        <input class="form-control" type="text" name="stock" id="" placeholder="Stock" required>
+                    </div>
+                    <div>
+                        <input class="form-control" type="text" name="desc" id="" placeholder="Description" required>
+                    </div>
+                    <div>
+                        <input class="form-control" type="text" name="year" id="" placeholder="Release Year" required>
+                    </div>
+                    <div>
+                        <select class="categories" name="categories" id="categories">
+                            <% for( let i = 0; i < categoryNames.length; i++ ) { %>
+                                <option name="aaa" value="<%= categoryNames[i] %>"><%= categoryNames[i] %></option>
+                            <% } %>
+                          </select>
+                    </div>
+    
+                        <div class="">
+                            <input class="form-control" type="text" name="image" id="image" placeholder="Image Url" required>
+    
+                        </div>
+
+                        <br>
+                        <div class="">
+                            <button type="button" class="btn btn-primary mb-3 add" id="denemeid" onclick="add()">+</button>
+                        </div>            
+                        <p id ="p1"></p>
+                        <input class="form-control" type="text" name="images" id="p2">
+    
+    
+                    <div>
+                        <button class="btn btn-primary mb-3"type="submit" >Save</button>
+                    </div>
+                    <%- message %> 
+               
+            </form>
+            </div>
+            <% }else{ %> 
+                
+                <p>Non-sellers cannot access this page</p>
+        
+
+            <% } %> 
+
+    <% }else{ %> 
+        <header>
+            <p>Not logged</p>
+           <a href="/login/seller">Seller Login</a>
+        </header>
+        <p>Please login...</p>
+    <% } %> 
+
+
+    
+</body>
+<script>
+    var p2 = document.getElementById('p2')
+    p2.style.visibility = "hidden";
+    var images = [];
+    function add(){
+        var p1 = document.getElementById('p1');
+        p1.innerHTML = "";
+        var image = document.getElementById('image');
+        var imageLink = image.value;
+        if(imageLink){
+            images.push(imageLink);
+            alert('Added!')
+        }
+        for(var i = 0;i<images.length;i++){
+            p1.innerHTML = p1.innerHTML+ "<br>" + images[i];
+        }
+        p2.value = images;
+    }
+
+</script>
+
+</html>

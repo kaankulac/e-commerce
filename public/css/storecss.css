@@ -1,0 +1,25 @@
+/* Create two equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 25%;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 35px;
+    margin-bottom:20px;
+    margin-left:15px;
+    width:23%;
+  }
+.image {
+    border: 2px solid gray;
+    border-radius: 35px;
+    width:250px;
+    height:300px;
+
+}
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Register</title>
+</head>
+<body>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+<link href="/css/register.css" rel="stylesheet" type="text/css">
+
+
+<div class="testbox">
+  <h1>Registration</h1>
+
+  <form action="/register" method="POST">
+      <hr>
+    <div class="accounttype">
+      <input type="radio" value="personal" id="radioOne" onchange="personal(this)" name="account" checked/>
+      <label for="radioOne" class="radio">Personal</label>
+      <input type="radio" value="seller" id="radioTwo" onchange="seller(this)" name="account" />
+      <label for="radioTwo" class="radio">Seller</label>     
+    </div>
+    
+  <hr>
+  <label id="icon" for="username"><i class="icon-user "></i></label>
+  <input type="text" name="username" id="username" placeholder="Username" required/>
+  <label id="icon" for="email"><i class="icon-envelope "></i></label>
+  <input type="email" name="email" id="email" placeholder="Email" required/>
+  <label id="icon" for="name"><i class="icon-user"></i></label>
+  <input type="text" name="name" id="hidd" placeholder="Name" class="hidd"  />
+  <label id="icon" for="name"><i class="icon-shield"></i></label>
+  <input type="password" name="password" id="password" placeholder="Password" required/>
+  <div id="seller"> 
+    <div>
+      <input type="radio" name="store" id="radioThree" value="create" onchange="create(this)" checked>
+      <label for="radioThree" class="radio">Create a Store</label>
+    </div>
+    <div>
+      <input type="radio" name="store" id="radioFour" value="join" onchange="join(this)">
+      <label for="radioFour" class="radio">Join a Store</label>
+    </div>  
+  </div>
+  <div>
+    <div id="create">
+      <div>
+        <input type="text" name="storeName" id="" placeholder="Store Name">
+      </div>
+      <div>
+        <input type="text" name="joinID" id="" placeholder="Store Join ID">
+      </div>
+    </div>
+    <div id="join">
+      <input type="text" name="joinid" id="" placeholder="Join Id">
+    </div>
+  </div>
+  <p><%- message %> .</p>
+   <button type="submit" class="button">Register</button>
+  </form>
+</div>
+</body>
+</html>
+<script>
+  document.getElementById('join').style.visibility = "hidden";
+  document.getElementById('create').style.visibility = "hidden";
+  document.getElementById('seller').style.visibility = "hidden";
+  function seller(x){
+    if(x.checked){
+      document.getElementById('seller').style.visibility = "visible";
+      document.getElementById('create').style.visibility = "visible";
+      document.getElementById('radioThree').checked = true;
+      //document.getElementById('hidd').style.visibility = "hidden";
+    }
+  }
+  
+  function personal(x){
+    if(x.checked){
+      document.getElementById('seller').style.visibility = "hidden";
+      document.getElementById('create').style.visibility = "hidden";
+      document.getElementById('join').style.visibility = "hidden";
+      document.getElementById('hidd').style.visibility = "visible";
+
+    }
+  }
+  function join(x){
+    document.getElementById('join').style.visibility = "visible";
+    document.getElementById('create').style.visibility = "hidden";
+
+  }
+  function create(x){
+    document.getElementById('join').style.visibility = "hidden";
+    document.getElementById('create').style.visibility = "visible";
+
+  }
+</script>
