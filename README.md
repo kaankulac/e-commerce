@@ -3,7 +3,7 @@
 A simple e-commerce site whose interface is still being developed.
 
 
-# Download Required Libraries
+# Download Required Packages
 ```
 npm i --save express
 npm i --save url
