@@ -9,6 +9,7 @@ const bcrypt  = require('bcrypt');
 const mailer = require('nodemailer');
 const emailExistance = require('email-existence');
 const helper = require('../helpers/jshelper.js');
+const { requires } = require('consolidate');
 
 
 exports.userRegisterGet = (req,res) => {
@@ -104,65 +105,59 @@ exports.userRegisterPost = async (req,res) =>{
             }
 
         });
-
-    
-
-         
+ 
         
 }
 
 exports.userLoginGet = (req,res) => {
-    res.render('userLogin.ejs',{message:""});
+    res.render('login.ejs',{message:""});
 }
 
 exports.userLoginPost = async (req,res) => {
-    var images = [];
-    var products = await Product.findAll();
-    var length = products.length;
-    for(var i = products[0].id;i<=products[length-1].id;i++){
-        var image = await Image.findOne({where:{productId:i}});
-        images.push(image.imageUrl);
-    }
-    var count = await User.count({where:{username:req.body.username}});
-    var user = await User.findOne({where:{username:req.body.username}});
-    if (count===1){
-        var validPassword = await bcrypt.compare(req.body.password,user.password);
-        if(validPassword){
-            req.session.isAuthenticated = true;
-            req.session.user = user;
-            req.session.type = "user";
-            res.redirect('/');
+    var type = req.body.user;
+    var username = req.body.username;
+    var password = req.body.password;
+    if (type==="personal"){
+        var count = await User.count({where:{username:username}});
+        if (count>0){
+            var user = await User.findOne({where:{username:username}});
+            var validPassword = await bcrypt.compare(password,user.password);
+            if(validPassword){
+                req.session.isAuthenticated = true;
+                req.session.user = user;
+                req.session.type = "user";
+                console.log('giriş başarılı ana sayfaya yönlendiriliyorsunuz...');
+                res.redirect('/');
+            }else{
+                console.log('şifre yanlış...');
+                res.redirect('/login');
+            }
         }else{
-            res.render('userLogin.ejs',{message:"Password wrong!"});
+            res.redirect('/login');
+            console.log('kullanıcı bulunamadı...')
         }
-
     }else{
-        res.render('userLogin.ejs',{message:"User does not exists!"});
-    }
-}
-
-exports.sellerLoginGet = (req,res) => {  
-    res.render('sellerLogin.ejs',{message:""});
-}
-
-exports.sellerLoginPost = async function(req,res) {
-    var count = await Seller.count({where:{username:req.body.username}});
-    var seller = await Seller.findOne({where:{username:req.body.username}});
-    var validPassword = await bcrypt.compare(req.body.password,seller.password);
-    if (count===1){
-        if(validPassword){
-            req.session.isAuthenticated = true;
-            req.session.user = seller;
-            req.session.type = "seller";
-            res.redirect('/management/product/add');
+        var count = await Seller.count({where:{username:username}});
+        if (count>0){
+            var seller = await Seller.findOne({where:{username:username}});
+            var validPassword = await bcrypt.compare(password,seller.password);
+            if (validPassword){
+                req.session.isAuthenticated = true;
+                req.session.user = seller;
+                req.session.type = "seller";
+                res.redirect('/');
+                console.log('giriş başarılı ana sayafaya yönlendiriliyorsunuz...');
+            }else {
+                res.redirect('/login');
+                console.log('şifre yanlış..');
+            }
         }else{
-            res.render('sellerLogin.ejs',{message:"Password wrong!"});
+            console.log('Satıcı bulunamadı...');
+            res.redirect('/login');
         }
-
-    }else{
-        res.render('sellerLogin.ejs',{message:"User does not exists!"});
     }
 }
+
 
 exports.passwordChangeGet = (req,res) => {
     res.render('passwordChange.ejs',{isAuthenticated:req.session.isAuthenticated});

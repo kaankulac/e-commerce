@@ -16,6 +16,23 @@
 
 
     <% if(isAuthenticated){ %>
+        <% if (info) { %>
+            <% if (warning===true) { %>
+             <div class="message" style="background-color: #E32B2B;" id="message">
+                <i onclick="c13()" class="fas fa-times"></i>
+                <p><%= info %></p>  
+             </div>
+
+            <% }else{ %>
+                <div class="message" style="background-color:#70F57E;" id="message">
+
+                    <i onclick="c13()" class="fas fa-times"></i> 
+                    <p><%= info %></p>
+                </div>
+
+
+                <% } %> 
+        <% } %>
         <% if(session.type==="seller"){ %> 
             <p><strong>Store ID: <%= session.user.storeId %> </strong></p>
      
@@ -84,7 +101,8 @@
     
 </body>
 <script>
-    var p2 = document.getElementById('p2')
+    
+    var p2 = document.getElementById('p2');
     p2.style.visibility = "hidden";
     var images = [];
     function add(){
@@ -100,6 +118,10 @@
             p1.innerHTML = p1.innerHTML+ "<br>" + images[i];
         }
         p2.value = images;
+    }
+    function c13(){
+        var info = document.getElementById('message');
+        info.style.visibility = "hidden";
     }
 
 </script>

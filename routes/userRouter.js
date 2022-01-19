@@ -39,11 +39,9 @@ router.use(session({
 router.get('/register',userController.userRegisterGet);
 router.post('/register',userController.userRegisterPost);
 
-router.get('/login/seller',userController.sellerLoginGet);
-router.post('/login/seller',userController.sellerLoginPost);
+router.get('/login',userController.userLoginGet);
+router.post('/login',userController.userLoginPost);
 
-router.get('/login/user',userController.userLoginGet);
-router.post('/login/user',userController.userLoginPost);
 
 router.get('/profile/change/password',userController.passwordChangeGet);
 router.post('/profile/change/password',userController.passwordChangePost);

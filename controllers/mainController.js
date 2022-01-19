@@ -62,8 +62,10 @@ exports.shopcartPagePost = async (req,res) => {
 
     if (id==="order"){
         var userId = req.session.user.id;
+        console.log(userId)
         if (req.session.type==="user"){
             var user = await User.findOne({where:{id:userId}});
+            console.log(user)
         }else{
             var user = await Seller.findOne({where:{id:userId}});
         }
