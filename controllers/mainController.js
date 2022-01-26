@@ -47,29 +47,30 @@ exports.logoutGet = (req,res) => {
 
 exports.shopcartPageGet = async (req,res) => {
     var products = [];
+    var images = [];
     var shopcart = await Shopcart.findAll({where:{userId:req.session.user.id}});
     for (var i = 0;i<shopcart.length;i++){
         var product = await Product.findOne({where:{id:shopcart[i].productId}});
+        var image = await Image.findOne({where:{productId:shopcart[i].productId}});
+        images.push(image.imageUrl);
         products.push(product);
     }
-    res.render('shopCart.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,shopcart:shopcart});
+    res.render('shopCart.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,shopcart:shopcart,images:images});
 };
 
 exports.shopcartPagePost = async (req,res) => {
     var pathname = url.parse(req.url).pathname;
-    var id = pathname.split('/')[2];
+    var path = pathname.split('/')[2];
     var orders = [];
 
-    if (id==="order"){
+    if (path==="order"){
         var userId = req.session.user.id;
-        console.log(userId)
         if (req.session.type==="user"){
             var user = await User.findOne({where:{id:userId}});
-            console.log(user)
         }else{
             var user = await Seller.findOne({where:{id:userId}});
         }
-        var pMethodCount = paymentMethod.count({where:{userId:userId}}); 
+        var pMethodCount = await paymentMethod.count({where:{userId:userId}}); 
         if (user.adress && pMethodCount>0){
             var products = await Shopcart.findAll({where:{userId:userId}});
             for(var i = 0; i<products.length;i++){
@@ -83,6 +84,7 @@ exports.shopcartPagePost = async (req,res) => {
                     amount:products[i].amount,
                     isCancelled:false,
                     isComment:false,
+                    isReturned:false,
                 });
                 var order = [product.productName,products[i].amount,products[i].totalPrice];
                 orders.push(order);
@@ -119,12 +121,15 @@ exports.shopcartPagePost = async (req,res) => {
         }
         
     }else{
+        var id = req.body.button
         var shopcart = await Shopcart.findOne({where:{id:id}});
         var pId = shopcart.productId;
         var product = await Product.findOne({where:{id:pId}});
+        var amount = parseInt(req.body[product.productName+"+"+shopcart.id]);
+        console.log(amount)
         Shopcart.update({
-            amount:req.body[product.productName],
-            totalPrice:parseInt(req.body[product.productName])*parseInt(product.price)
+            amount:amount,
+            totalPrice:amount*parseInt(product.price)
         },
         {
             returning:true, where: {id:id}

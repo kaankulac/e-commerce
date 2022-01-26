@@ -4,50 +4,66 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopcart</title> 
+    <title>Shopcart</title>
 </head>
 <body>
     <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
-    <div align="center">
+    <link rel="stylesheet" href="css/shopcartPage.css" type="text/css">
 
-    <% for( let i = 0; i < products.length; i++ ) { %>
-        <form action="/shopcart/<%= shopcart[i].id %> " method="POST">
-            
-            <div style="float:left;padding:20px;" >
-                <h1  id = "<% products[i].productName %>" ><%= products[i].productName %> </h1>
-                <p>Price: <%= products[i].price %> </p>
-                <p>Total Price: <%= shopcart[i].totalPrice %> </p>
-                <div>
-                    <p >Amount:&nbsp;</p><p  id="<%= shopcart[i].productId %>"name=" " id="amount"><%= shopcart[i].amount %> </p>
-                    <button type="submit" value="<%= shopcart[i].productId %> " onclick="addAmount(this,'<%= products[i].productName %>' )" >+</button>
-                </div>
-            </div>
-            <input id = "haha" style="visibility: hidden;" type="text" name="<%=products[i].productName%>">
-        </form>
+    <div class="container">
+        <% if (products.length === 0) { %>
+            <p>Your shopcart is empty... <a href="/">Main Page</a></p>
+        <% }else{ %>
+            <% for( let i = 0; i < products.length; i++ ) { %>
+                    <div class="product">
+                        <form method="post">
+                        <img class="img" src=<%= images[i] %>  alt="">
+                        <h3><%= products[i].productName %> </h4>
+                        <p>Amount: <span  id="<%= shopcart[i].id %>" name="amount" ><%= shopcart[i].amount %></span></p>
+                        <p>Price: <%= products[i].price %> $ </p>
+                        <p>Total Price: <%= shopcart[i].totalPrice %> $ </p>
+                        <input id="<%=shopcart[i].id%>1" style="visibility: hidden;position:absolute;" type="text" name="<%= products[i].productName %>+<%= shopcart[i].id %>">
+                            <button name="button" value="<%= shopcart[i].id %>" onclick="arti(this.value)" class="btn1 arti"> <strong>+</strong> </button><button name="button" value="<%= shopcart[i].id %>" onclick="eksi(this.value)" class="btn1 eksi"> <strong>-</strong> </button>
+                        </form>
+                        
+
+                    </div>
+                <% } %>
         
+        <% } %> 
 
-    <% } %>
-    <form action="shopcart/order" method="POST">
-        <button type="submit">Order</button>
-    </form>
-    
-</div>
-
+    </div>
+        <form action="/shopcart/order" method="post"></form>
+        <button class="button" type="submit">Order</button>
 </body>
 </html>
-<script>
-    txt.style.visibility = "hidden";
-    function addAmount(x,name){
-        var value = x.value;
-        var p = document.getElementById(parseInt(value));
-        var txt = document.getElementsByName(name);
-        p.innerHTML = parseInt(p.innerHTML) + 1
-        txt[0].value = p.innerHTML
-    };
-        
-        
-        
-         
 
-    
+<script>
+    function arti(id){
+        var amountTxt = document.getElementById(String(id));
+        amount = parseInt(amountTxt.innerHTML);
+        amount+=1;
+        amountTxt.innerHTML = String(amount);
+        var txt = document.getElementById(id+"1");
+        txt.value = String(amount);
+    }
+
+    function eksi(id){
+        var amountTxt = document.getElementById(String(id));
+        amount = parseInt(amountTxt.innerHTML);
+        if (amount===1){
+            alert('Ürün sepetten kaldırılsın mı?')
+            var txt = document.getElementById(id+"1");
+            txt.value = String(amount);
+        }else if(amount===0){
+            
+        }else{
+            amount-=1;
+            amountTxt.innerHTML = String(amount);
+            var txt = document.getElementById(id+"1");
+            txt.value = String(amount);
+        }
+
+    }
+
 </script>

@@ -14,6 +14,7 @@ router.get('/logout/',mainController.logoutGet);
 router.get('/store/:storename',storePageController.storePageGet);
 router.get('/products/:productname',productPageController.productPageGet);
 router.get('/shopcart',mainController.shopcartPageGet);
+router.post('/shopcart',mainController.shopcartPagePost);
 router.post('/shopcart/:id',mainController.shopcartPagePost);
 router.post('/products/:productname',productPageController.productPagePost);
 router.post('/product/comment',productPageController.productCommentPost);

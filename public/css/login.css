@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,500,600,700&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Lato' , sans-serif;
+} 
+
+body{
+    background-color: #B8C7D1;
+}
+
+.login {
+    background-color: #95AAB8;
+    margin: auto;
+    width:40%;
+    height:500px;
+    position: relative;
+    top:150px;
+    border-radius: 15px;
+    border: 3px solid gray;
+    box-shadow: 5px 5px 10px 5px;
+}
+
+input[type="text"],input[type="password"]{
+    display:block;
+    text-align: center;
+    margin: 15px auto;
+    padding: 10px 10px 10px 10px;
+    border: 2px solid black;
+    background-color: #EDF4F4;
+    border-radius:10px;
+}
+
+input[type="text"]:focus,input[type="password"]:focus{
+    outline-color:#70C2C2;
+}
+
+input[type="text"]:hover,input[type="password"]:hover{
+    background-color:#AAABAB;
+}
+
+button[type="submit"]{
+    margin:auto;
+}
+
+h2 {
+    text-align: center;
+    padding: 50px 0 25px 0;
+}
+.cssbuttons-io-button {
+    background: #2CADAD
+    ;
+    color: white;
+    font-family: inherit;
+    padding: 0.35em;
+    padding-left: 1.2em;
+    font-size: 17px;
+    font-weight: 500;
+    border-radius: 0.9em;
+    border: none;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    box-shadow: inset 0 0 1.6em -0.6em #714da6;
+    overflow: hidden;
+    position: relative;
+    height: 2.8em;
+    padding-right: 3.3em;
+   }
+   
+   .cssbuttons-io-button .icon {
+    background: white;
+    margin-left: 1em;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.2em;
+    width: 2.2em;
+    border-radius: 0.7em;
+    box-shadow: 0.1em 0.1em 0.6em 0.2em #7b52b9;
+    right: 0.3em;
+    transition: all 0.3s;
+   }
+   
+   .cssbuttons-io-button:hover .icon {
+    width: calc(100% - 0.6em);
+   }
+   
+   .cssbuttons-io-button .icon svg {
+    width: 1.1em;
+    transition: transform 0.3s;
+    color: #7b52b9;
+   }
+   
+   .cssbuttons-io-button:hover .icon svg {
+    transform: translateX(0.1em);
+   }
+   
+   .cssbuttons-io-button:active .icon {
+    transform: scale(0.95);
+   }
+   
+   .wrapper{
+     display: inline-flex;
+     background: #95AAB8;
+     height: 80px;
+     /* width: 400px; */
+     align-items: center;
+     justify-content: space-evenly;
+     border-radius: 5px;
+     padding: 20px 15px;
+     /* box-shadow: 5px 5px 30px rgba(0,0,0,0.2); */
+   }
+   .wrapper .option{
+     background: #fff;
+     height: 100%;
+     width: 100%;
+     display: flex;
+     align-items: center;
+     justify-content: space-evenly;
+     margin: 0 10px;
+     border-radius: 5px;
+     cursor: pointer;
+     padding: 0 10px;
+     border: 2px solid lightgrey;
+     transition: all 0.3s ease;
+   }
+   .wrapper .option .dot{
+     height: 20px;
+     width: 20px;
+     background: #d9d9d9;
+     border-radius: 50%;
+     position: relative;
+   }
+   .wrapper .option .dot::before{
+     position: absolute;
+     content: "";
+     top: 4px;
+     left: 4px;
+     width: 12px;
+     height: 12px;
+     background: #737A7A;
+     border-radius: 50%;
+     opacity: 0;
+     transform: scale(1.5);
+     transition: all 0.3s ease;
+   }
+   input[type="radio"]{
+     display: none;
+   }
+   #option-1:checked:checked ~ .option-1,
+   #option-2:checked:checked ~ .option-2{
+     border-color: #737A7A;
+     background: #737A7A;
+   }
+   #option-1:checked:checked ~ .option-1 .dot,
+   #option-2:checked:checked ~ .option-2 .dot{
+     background: #fff;
+   }
+   #option-1:checked:checked ~ .option-1 .dot::before,
+   #option-2:checked:checked ~ .option-2 .dot::before{
+     opacity: 1;
+     transform: scale(1);
+   }
+   .wrapper .option span{
+     font-size: 20px;
+     color: #808080;
+   }
+   #option-1:checked:checked ~ .option-1 span,
+   #option-2:checked:checked ~ .option-2 span{
+     color: #fff;
+   }
+
+  span{
+     margin-left:10px;
+   }
+
+  .forgot {
+    text-decoration: none;
+    color: black;
+    position:absolute;
+    right:25px;
+  }
+
+  .forgot:hover {
+    color:#2CADAD;
+  }
+
+  .forgot:active {
+    color:#70C2C2;
+  }
+
+  button {
+    position:absolute;
+    top:45px;
+  }
+
+  .reg {
+    position:absolute;
+    display:block;
+    bottom:0px;
+    left:185px;
+  }
+
+  .link {
+    text-decoration: none;
+  }
+
+  .link:hover {
+    color:#2CADAD;
+  }
+
+  .link:active {
+    color:red;
+  }
+
+  
