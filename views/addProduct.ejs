@@ -9,120 +9,158 @@
 
 </head>
 <body>
-<!-- <button type="button" value="Add" id="denemeid" onclick="deneme()" > -->
+
     <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    <link rel="stylesheet" href="/css/addProduct.css" type="text/css">
 
-    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <h4>Store ID: <%= session.user.storeId %> </h4>
 
+    <form method="post">
 
-    <% if(isAuthenticated){ %>
-        <% if (info) { %>
-            <% if (warning===true) { %>
-             <div class="message" style="background-color: #E32B2B;" id="message">
-                <i onclick="c13()" class="fas fa-times"></i>
-                <p><%= info %></p>  
-             </div>
-
-            <% }else{ %>
-                <div class="message" style="background-color:#70F57E;" id="message">
-
-                    <i onclick="c13()" class="fas fa-times"></i> 
-                    <p><%= info %></p>
+    <div class="main" align="center">
+                <div class="pName container">
+                    <input type="text" name="pName" id="pName" placeholder="Product Name" required>
                 </div>
+                <div class="price container">
+                    <input type="text" name="price" id="price" placeholder="Price" required>
+                </div>
+                <div class="year container">
+                    <input type="text" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
+                </div>
+                <div class="stock container">
+                    <input type="text" name="stock" id="stock" placeholder="Stock" required>
+                </div>
+                <div class="description container">
+                    <input type="text" name="description" id="description" placeholder="Description" required>
+                </div>
+  
+            <div class="category container">
+                <select name="category" id="category">
+                    <% for( let i = 0; i < categoryNames.length; i++ ) { %>
+                        <option name="categoryOption" value="<%= categoryNames[i] %>"><%= categoryNames[i] %> </option>
+                    <% } %>
+            </select>
 
-
-                <% } %> 
-        <% } %>
-        <% if(session.type==="seller"){ %> 
-            <p><strong>Store ID: <%= session.user.storeId %> </strong></p>
-     
-            <div align="center">
-                <p>Welcome <%= session.user.username %> </p>
-                <form class="mb-3" action="/management/product/add" method="POST">
-                    <div>
-                        <input class="form-control" type="text" name="pname" id="" placeholder="Product Name" required>
-                    </div>
-                    <div>
-                        <input class="form-control" type="text" name="price" id="" placeholder="Price" required>
-                    </div>
-                    <div>
-                        <input class="form-control" type="text" name="stock" id="" placeholder="Stock" required>
-                    </div>
-                    <div>
-                        <input class="form-control" type="text" name="desc" id="" placeholder="Description" required>
-                    </div>
-                    <div>
-                        <input class="form-control" type="text" name="year" id="" placeholder="Release Year" required>
-                    </div>
-                    <div>
-                        <select class="categories" name="categories" id="categories">
-                            <% for( let i = 0; i < categoryNames.length; i++ ) { %>
-                                <option name="aaa" value="<%= categoryNames[i] %>"><%= categoryNames[i] %></option>
-                            <% } %>
-                          </select>
-                    </div>
-    
-                        <div class="">
-                            <input class="form-control" type="text" name="image" id="image" placeholder="Image Url" required>
-    
-                        </div>
-
-                        <br>
-                        <div class="">
-                            <button type="button" class="btn btn-primary mb-3 add" id="denemeid" onclick="add()">+</button>
-                        </div>            
-                        <p id ="p1"></p>
-                        <input class="form-control" type="text" name="images" id="p2">
-    
-    
-                    <div>
-                        <button class="btn btn-primary mb-3"type="submit" >Save</button>
-                    </div>
-                    <%- message %> 
-               
-            </form>
             </div>
-            <% }else{ %> 
-                
-                <p>Non-sellers cannot access this page</p>
-        
 
-            <% } %> 
+            <div class="image container" name="imageBox">
+                <input type="text" name="image" id="image" placeholder="Image Url" required>
+                <button type="button" name="addImage" id="addImage" onclick="addImg()">+</button>
+                <div class="images" id="images">
 
-    <% }else{ %> 
-        <header>
-            <p>Not logged</p>
-           <a href="/login/seller">Seller Login</a>
-        </header>
-        <p>Please login...</p>
-    <% } %> 
+                </div>
+                <p id="imageInformation" style="visibility:hidden;position:absolute">Click on the image you want to delete.</p>
+            </div>
+            <div class="tag container" name="tagBox" id ="tagBox">
+                <input type="text" name="tag" id="tag" placeholder="Tag Name" required>
+                <button type="button" name="addTag" id="addTag" onclick="addTg()">+</button>
+                <div class="tags" id="tags">
 
+                </div>
+                <p id="information" style="visibility:hidden;position:absolute">Click on the tag you want to delete.</p>
+            </div>
+            <input type="text" name="textBox" id="textBox" style="visibility:hidden;position:absolute">
+            <input type="text" name="imageBox" id="imageBox" style="visibility:hidden;position:absolute">
+
+            <button type="submit">Save</button>
+            
+
+
+    </div>
+</form>
 
     
 </body>
 <script>
-    
-    var p2 = document.getElementById('p2');
-    p2.style.visibility = "hidden";
-    var images = [];
-    function add(){
-        var p1 = document.getElementById('p1');
-        p1.innerHTML = "";
-        var image = document.getElementById('image');
-        var imageLink = image.value;
-        if(imageLink){
-            images.push(imageLink);
-            alert('Added!')
+    function imageEdit(){
+        var imgs = "";
+        var imgBox = document.getElementById("imageBox");
+        var allImages = document.getElementsByTagName('img');
+        for (let i=0; i<allImages.length;i++){
+            if(allImages[i]){
+                var imgs = imgs+allImages[i].src+",";
+            }
         }
-        for(var i = 0;i<images.length;i++){
-            p1.innerHTML = p1.innerHTML+ "<br>" + images[i];
+        imgBox.value = imgs;
+    }
+
+    function tagEdit(){
+        var tgs = "";
+        var tagBox = document.getElementById("textBox");
+        var allTags = document.getElementsByClassName("newTag");
+        for(let i = 0; i<allTags.length;i++){
+            if(allTags[i]){
+                tgs = tgs+allTags[i].innerHTML+',';
+            }
         }
-        p2.value = images;
+        tagBox.value = tgs;
+
     }
-    function c13(){
-        var info = document.getElementById('message');
-        info.style.visibility = "hidden";
+    var tagCount = 0;
+    var imageCount = 0;
+    function addImg(){
+        if (imageCount<6){
+            var image = document.getElementById("image");
+            var img = document.createElement("img");
+            var images = document.getElementById("images");
+            var imageInformation = document.getElementById("imageInformation");
+            imageInformation.style.visibility = "visible";
+            imageInformation.style.position = "static";
+            img.name = "image";
+            img.src = image.value;
+            img.id = "newImg";
+            imageCount+=1;
+            images.appendChild(img);
+            imageEdit();
+
+
+        }else{
+            alert('En fazla 6 resim eklenebilir..')
+
+        }
+
+        img.addEventListener('click',() => {
+            imageCount-=1;
+            img.remove();
+            imageEdit();
+            if(imageCount===0){
+                imageInformation.style.visibility = "hidden";
+                imageInformation.style.position = "absolute"
+            }
+        })
+        
     }
+    function addTg(){
+        if(tagCount<5){
+            var tag = document.getElementById("tag");
+            var newTag = document.createElement("div");
+            var tags = document.getElementById("tags");
+            var info = document.getElementById('information');
+            info.style.visibility = "visible";
+            info.style.position = "static";
+            newTag.className = "newTag";
+            newTag.id = "newTag";
+            newTag.innerHTML = tag.value;
+            tagCount+=1;
+            tags.appendChild(newTag);
+            tagEdit();
+
+        }else{
+            alert('En fazla 5 tane tag eklenebilir...')
+        }
+
+        newTag.addEventListener('click',() => {
+            newTag.remove();
+            tagCount-=1;
+            tagEdit();
+            if(tagCount===0){
+                info.style.position = "absolute";
+                info.style.visibility="hidden";
+            }
+        });
+        
+    }
+
 
 </script>
 

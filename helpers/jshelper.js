@@ -40,3 +40,13 @@ exports.passwordControl = (password) => {
     return false;
 }
 
+
+exports.authentication = (session) => {
+    if(session.isAuthenticated){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+

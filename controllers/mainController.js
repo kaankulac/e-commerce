@@ -12,6 +12,7 @@ const Message = require('../models/messageModel.js');
 const Favourite = require('../models/favouritesModel.js');
 const Category = require('../models/categoryModel.js');
 const paymentMethod = require('../models/paymentMethodModel.js');
+const helper = require('../helpers/jshelper.js');
 
 url1 = (id,name) => {
     name = name.replace(' ','-')
@@ -20,28 +21,33 @@ url1 = (id,name) => {
 }
 
 exports.indexGet = async (req,res) => {
-    var images = [];
-    var products = await Product.findAll();
-    var length = products.length;
-    var store = await Store.findAll();
-    for(var i = products[0].id;i<=products[length-1].id;i++){
-        var image = await Image.findOne({where:{productId:i}});
-        images.push(image.imageUrl);
+    if (helper.authentication(req.session)){
+        var images = [];
+        var products = await Product.findAll();
+        var length = products.length;
+        var store = await Store.findAll();
+        for(var i = products[0].id;i<=products[length-1].id;i++){
+            var image = await Image.findOne({where:{productId:i}});
+            images.push(image.imageUrl);
+        }
+        res.render('index.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,images:images,stores:store,url:url1});
+    }else{
+        res.redirect('/login'); // you must be logged in to access this page
     }
-    res.render('index.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,images:images,stores:store,url:url1});
+
 };
 
 exports.logoutGet = (req,res) => {
-    if(req.session.type){
+    if(helper.authentication(req.session)){
         req.session.destroy(function(err){
             if(err){
                 console.log(err)
             }else{
-                res.redirect('/');
+                res.redirect('/login');
             }
         });
     }else{
-        res.render('logout.ejs');
+        res.redirect('/login'); //already logged out please login
     }
 };
 
