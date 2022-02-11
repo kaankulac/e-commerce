@@ -20,6 +20,7 @@ router.post('/products/:productname',productPageController.productPagePost);
 router.post('/product/comment',productPageController.productCommentPost);
 router.get('/product/comment',productPageController.productCommentGet);
 router.get('/orders',mainController.orderPageGet);
+router.post('/orders/cancel/:id',mainController.orderCancelPost);
 router.get('/order/complete/:id',mainController.orderCompleteGet);
 router.get('/order/cancel/:id',mainController.orderCancelGet);
 router.get('/orders/cancelled',mainController.cancelledOrdersGet);

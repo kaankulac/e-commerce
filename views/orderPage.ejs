@@ -8,28 +8,143 @@
 </head>
 <body>
     <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    <link rel="stylesheet" href="css/orderPage.css">
+    <div class="ongoing" id="ongoing">
+        <div class="container">
+            <% if (orders) { %>
+                <% for( let i = 0; i < orders.length; i++ ) { %>
+                    <div class="product">
+                        <img class="img" src=<%= images[i] %>  alt="">
+                        <h3><%= products[i].productName %> </h4>
+                        <p>Amount: <span name="amount" ><%= orders[i].amount %></span></p>
+                        <p>Price: <%= products[i].price %> $ </p>
+                        <p>Total Price: <%= orders[i].totalPrice %> $ </p>
+                        <form action="/orders/cancel/<%= orders[i].id %> " method="post">
+                            <button class="cancelButton">Cancel Order</button>        
+                        </form>
+                    </div>
+                <% } %>
     
-    <% if (user==="user") { %>
-        <% for( let i = 0; i < orders.length; i++ ) { %>
-            <p>Product Name: <%= products[i].productName %> </p>
-            <p>Amount: <%= orders[i].amount %> </p>
-            <p>Total Price: <%= orders[i].totalPrice %> </p>
-            <br>
-        <% } %>
-    <% }else{ %>
-        <% for( let i = 0; i < orders.length; i++ ) { %>
-            <p>Product Name: <%= products[i].productName %> </p>
-            <p>Amount: <%= orders[i].amount %> </p>
-            <p>Total Price: <%= orders[i].totalPrice %> </p>
+    
+            <% }else{ %>
+            <p>Your haven't an order... <a href="/">Main Page</a></p>
+            <% } %> 
+        </div>
+    </div>
+    <div class="completed" id="completed">
+        <div class="container">
+            <% if (completedOrders) { %>
+                <% for( let i = 0; i < completedOrders.length; i++ ) { %>
+                    <div class="product">
+                        <img class="img" src=<%= completedImages[i] %>  alt="">
+                        <h3><%= completedProducts[i].productName %> </h4>
+                        <p>Amount: <span name="amount" ><%= completedOrders[i].amount %></span></p>
+                        <p>Price: <%= completedProducts[i].price %> $ </p>
+                        <p>Total Price: <%= completedOrders[i].totalPrice %> $ </p>
+                        <form action="/orders/return/<%= completedOrders[i].id %> " method="post">
+                            <button class="returnButton">Return Order</button>        
+                        </form>
+                    </div>
+                <% } %>
+    
+    
+            <% }else{ %>
+            <p>Your haven't an completed order... <a href="/">Main Page</a></p>
+            <% } %> 
+        </div>
+    </div>
+    <div class="cancelled" id="cancelled">
+        <div class="container">
+            <% if (cancelledOrders) { %>
+                <% for( let i = 0; i < cancelledOrders.length; i++ ) { %>
+                    <div class="product">
+                        <img class="img" src=<%= cancelledImages[i] %>  alt="">
+                        <h3><%= cancelledProducts[i].productName %> </h4>
+                        <p>Amount: <span name="amount" ><%= cancelledOrders[i].amount %></span></p>
+                        <p>Price: <%= cancelledProducts[i].price %> $ </p>
+                        <p>Total Price: <%= cancelledOrders[i].totalPrice %> $ </p>
 
-            <button><a href="/order/complete/<%= orders[i].id %> ">Complete Order</a></button>
-            <button><a href="/order/cancel/<%= orders[i].id %> ">Cancel Order</a></button>
-            <br>
-        <% } %>
-    <% } %> 
-<button><a href="/orders/completed">Completed Orders</a></button>
-<button><a href="/orders/cancelled">Cancelled Orders</a></button>
+                    </div>
+                <% } %>
+    
+    
+            <% }else{ %>
+            <p>Your haven't an cancelled order... <a href="/">Main Page</a></p>
+            <% } %> 
+        </div>
+    </div>
+<div class="buttons">
+    <button class="btn1" type="button" onclick="ongoingFunc()">Ongoing Orders</button>
+    <button class="btn1" type="button" onclick="completedFunc()">Completed Orders</button>
+    <button class="btn1" type="button" onclick="cancelledFunc()">Cancelled Orders</button>
+</div>
+
 
     
 </body>
 </html>
+
+<script>
+    var cancelButtons = document.getElementsByClassName("cancelButton");
+    var returnButtons = document.getElementsByClassName("returnButton");
+    var ongoing = document.getElementById("ongoing");
+    var completed = document.getElementById("completed");
+    var cancelled = document.getElementById("cancelled");
+    for(let i = 0; i<returnButtons.length;i++){
+        returnButtons.disabled = true;
+    }
+
+    completed.style.visibility = "hidden";
+    completed.style.position = "absolute";
+    cancelled.style.visibility = "hidden";
+    cancelled.style.position = "absolute";
+
+    function activateButtons(option1,option2){
+        for(let i = 0;i<cancelButtons.length;i++){
+            if(option1 && !option2){
+                cancelButtons[i].disabled = false;
+                returnButtons[i].disabled = true;
+            }else if(!option1 && option2){
+                cancelButtons[i].disabled = true;
+                returnButtons[i].disabled = false;
+            }else{
+                cancelButtons[i].disabled = true;
+                returnButtons[i].disabled = true;
+            }
+        }
+    }
+
+    function ongoingFunc(){
+        completed.style.visibility = "hidden";
+        completed.style.position = "absolute";
+        cancelled.style.visibility = "hidden";
+        cancelled.style.position = "absolute";
+        ongoing.style.visibility = "visible";
+        ongoing.style.position = "static";
+        activateButtons(true,false);
+    }
+
+    function completedFunc(){
+        completed.style.visibility = "visible";
+        completed.style.position = "static";
+        cancelled.style.visibility = "hidden";
+        cancelled.style.position = "absolute";
+        ongoing.style.visibility = "hidden";
+        ongoing.style.position = "absolute";
+        activateButtons(false,true);
+
+
+    }
+
+    function cancelledFunc(){
+        completed.style.visibility = "hidden";
+        completed.style.position = "absolute";
+        cancelled.style.visibility = "visible";
+        cancelled.style.position = "static";
+        ongoing.style.visibility = "hidden";
+        ongoing.style.position = "absolute";
+        activateButtons(false,false);
+
+
+    }
+</script>

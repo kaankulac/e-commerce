@@ -13,6 +13,7 @@ const Favourite = require('../models/favouritesModel.js');
 const Category = require('../models/categoryModel.js');
 const paymentMethod = require('../models/paymentMethodModel.js');
 const helper = require('../helpers/jshelper.js');
+const { compareSync } = require('bcrypt');
 
 url1 = (id,name) => {
     name = name.replace(' ','-')
@@ -26,8 +27,8 @@ exports.indexGet = async (req,res) => {
         var products = await Product.findAll();
         var length = products.length;
         var store = await Store.findAll();
-        for(var i = products[0].id;i<=products[length-1].id;i++){
-            var image = await Image.findOne({where:{productId:i}});
+        for(let i = 0; i<products.length;i++){
+            var image = await Image.findOne({where:{productId:products[i].id}});
             images.push(image.imageUrl);
         }
         res.render('index.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,images:images,stores:store,url:url1});
@@ -151,28 +152,71 @@ exports.shopcartPagePost = async (req,res) => {
 
 exports.orderPageGet = async (req,res) => {
     var id = req.session.user.id
-    if(req.session.type==="user"){
-        var orders = await Order.findAll({where:{userId:id,isCancelled:false,isDone:false}});
+        var orders = await Order.findAll({where:{userId:id,isCancelled:false,isDone:false}});   
         var products = [];
+        var images = [];
         for (var i = 0; i<orders.length;i++){
             var productId = orders[i].productId;
             var product = await Product.findOne({where:{id:productId}});
+            var image = await Image.findOne({where:{productId:productId}});
             products.push(product);
+            images.push(image.imageUrl);
         }
-        res.render('orderPage.ejs',{isAuthenticated:req.session.isAuthenticated,orders:orders,products:products,user:req.session.type});       
-    }else{
-        var seller = await Seller.findOne({where:{id:id}});
-        var orders = await Order.findAll({where:{storeId:seller.storeId,isCancelled:false,isDone:false}});
-        var products = [];
-        for (var i = 0; i<orders.length;i++){
-            var productId = orders[i].productId;
-            var product = await Product.findOne({where:{id:productId}});
-            products.push(product);
+        var cancelledOrders = await Order.findAll({where:{userId:id,isCancelled:true}});
+        var cancelledProducts = [];
+        var cancelledImages = [];
+        for (let i = 0; i<cancelledOrders.length;i++){
+            var canProductId = cancelledOrders[i].productId;
+            var cancelledProduct = await Product.findOne({where:{id:canProductId}});
+            var cancelledImage = await Image.findOne({where:{productId:canProductId}});
+            cancelledProducts.push(cancelledProduct);
+            cancelledImages.push(cancelledImage.imageUrl);
+
         }
-        res.render('orderPage.ejs',{isAuthenticated:req.session.isAuthenticated,orders:orders,products:products,user:req.session.type});       
+        var completedOrders = await Order.findAll({where:{userId:id,isDone:true}});
+        var completedProducts = [];
+        var completedImages = [];
+        for (let i = 0; i< completedOrders.length;i++){
+            var comProductId =  completedOrders[i].productId;
+            var completedProduct = await Product.findOne({where:{id:comProductId}});
+            var completedImage = await Image.findOne({where:{productId:comProductId}});
+            completedProducts.push(completedProduct);
+            completedImages.push(completedImage.imageUrl);
+        }
+        console.log(completedOrders);
+        console.log(completedProducts);
+        
+        res.render('orderPage.ejs',
+        {
+            isAuthenticated:req.session.isAuthenticated,
+            orders:orders,
+            products:products,
+            images:images,
+            completedOrders:completedOrders,
+            completedProducts:completedProducts,
+            completedImages:completedImages,
+            cancelledOrders:cancelledOrders,
+            cancelledProducts:cancelledProducts,
+            cancelledImages,cancelledImages
+        });       
 
     }
+
+exports.orderCancelPost = async (req,res) => {
+    var pathname = url.parse(req.url).pathname;
+    var elements = pathname.split('/');
+    var id = elements[3];
+    Order.update({
+        isCancelled:true,
+        cancelFrom:"user"
+
+    },{
+        returning:true,where:{id:id}
+    })
+
+    res.redirect('back');
 }
+
 
 exports.orderCompleteGet = async (req,res) => {
     var transporter = mailer.createTransport({

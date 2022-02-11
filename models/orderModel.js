@@ -39,6 +39,10 @@ const Order = sequelize.define('Order',{
     isReturned:{
         type:DataTypes.BOOLEAN,
         allowNull:false
+    },
+    cancelFrom:{
+        type:DataTypes.STRING,
+        allowNull:true
     }
 });
 
