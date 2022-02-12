@@ -10,49 +10,66 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <% if (isAuthenticated) { %>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active" id="home">
-          <a class="nav-link" href="/">
-            <!-- <i class="fa">
-              <img src="/img/home.png" style="height:30px;width:30px" alt="">
-            </i> -->
-            <i class="fas fa-home">
-              Home
-            </i>
-            </a>
-        </li>
-        <li class="nav-item" id="categories">
-          <a class="nav-link" href="/categories">
-            <!-- <i class="fa">
-              <img src="/img/category.png" style="height:30px;width:30px" alt="">
-            </i> -->
-            <i class="fas fa-grip-horizontal">
-            Categories
-            </i>
-          </a>
-        </li>
-        <li class="nav-item" id="orders">
-          <a class="nav-link" href="/orders">
-            <!-- <i class="fa">
-              <img style="height:30px;width:30px" src="/img/order.png" alt="">
-            </i> -->
-            <i class="fas fa-cart-arrow-down">
-              Orders
-            </i>
+      <% if (session.type==="user") { %>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active" id="home">
+              <a class="nav-link" href="/">
+                <i class="fas fa-home">
+                  Home
+                </i>
+                </a>
+            </li>
+            <li class="nav-item" id="categories">
+              <a class="nav-link" href="/categories">
+                <i class="fas fa-grip-horizontal">
+                Categories
+                </i>
+              </a>
+            </li>
+            <li class="nav-item" id="orders">
+              <a class="nav-link" href="/orders">
+                <i class="fas fa-cart-arrow-down">
+                  Orders
+                </i>
+    
+                </a>
+            </li>
+            <li class="nav-item" id="shopcart">
+              <a class="nav-link" href="/shopcart">
+                <i class="fas fa-shopping-cart">
+                  Shopcart
+                </i>
+                </a>
+            </li>
+      <% }else{ %>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active" id="home">
+              <a class="nav-link" href="/">
+                <i class="fas fa-home">
+                  Home
+                </i>
+                </a>
+            </li>
+            <li class="nav-item" id="categories">
+              <a class="nav-link" href="/categories">
+                <i class="fas fa-grip-horizontal">
+                Categories
+                </i>
+              </a>
+            </li>
+            <li class="nav-item" id="orders">
+              <a class="nav-link" href="/management">
+                <i class="fas fa-solid fa-store">
+                  Management
+                </i>
 
-            </a>
-        </li>
-        <li class="nav-item" id="shopcart">
-          <a class="nav-link" href="/shopcart">
-            <!-- <i class="fa">
-              <img src="/img/shopping-cart.png" style="height:30px;width:30px" alt="">
-            </i> -->
-            <i class="fas fa-shopping-cart">
-              Shopcart
-            </i>
-            </a>
-        </li>
+    
+                </a>
+            </li>
+        <% } %> 
+    
         <li class="nav-item">
           <div class="dropdown fa" style="margin-top:10px">
             <button class="dropbtn fa"><i class="fas fa-user-circle"> Profile </i> </button>    

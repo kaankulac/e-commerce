@@ -24,14 +24,14 @@ url1 = (id,name) => {
 exports.indexGet = async (req,res) => {
     if (helper.authentication(req.session)){
         var images = [];
-        var products = await Product.findAll();
+        var products = await Product.findAll({where:{isDeleted:false}});
         var length = products.length;
         var store = await Store.findAll();
         for(let i = 0; i<products.length;i++){
             var image = await Image.findOne({where:{productId:products[i].id}});
             images.push(image.imageUrl);
         }
-        res.render('index.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,images:images,stores:store,url:url1});
+        res.render('index.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,images:images,stores:store,url:url1,session:req.session});
     }else{
         res.redirect('/login'); // you must be logged in to access this page
     }
@@ -53,16 +53,21 @@ exports.logoutGet = (req,res) => {
 };
 
 exports.shopcartPageGet = async (req,res) => {
-    var products = [];
-    var images = [];
-    var shopcart = await Shopcart.findAll({where:{userId:req.session.user.id}});
-    for (var i = 0;i<shopcart.length;i++){
-        var product = await Product.findOne({where:{id:shopcart[i].productId}});
-        var image = await Image.findOne({where:{productId:shopcart[i].productId}});
-        images.push(image.imageUrl);
-        products.push(product);
+    if(req.session.type==="user"){
+        var products = [];
+        var images = [];
+        var shopcart = await Shopcart.findAll({where:{userId:req.session.user.id}});
+        for (var i = 0;i<shopcart.length;i++){
+            var product = await Product.findOne({where:{id:shopcart[i].productId}});
+            var image = await Image.findOne({where:{productId:shopcart[i].productId}});
+            images.push(image.imageUrl);
+            products.push(product);
+        }
+        res.render('shopCart.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,shopcart:shopcart,images:images,session:req.session,});
+    }else{
+        res.render('404Page.ejs');
     }
-    res.render('shopCart.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,shopcart:shopcart,images:images});
+
 };
 
 exports.shopcartPagePost = async (req,res) => {
@@ -151,54 +156,58 @@ exports.shopcartPagePost = async (req,res) => {
 
 
 exports.orderPageGet = async (req,res) => {
-    var id = req.session.user.id
-        var orders = await Order.findAll({where:{userId:id,isCancelled:false,isDone:false}});   
-        var products = [];
-        var images = [];
-        for (var i = 0; i<orders.length;i++){
-            var productId = orders[i].productId;
-            var product = await Product.findOne({where:{id:productId}});
-            var image = await Image.findOne({where:{productId:productId}});
-            products.push(product);
-            images.push(image.imageUrl);
-        }
-        var cancelledOrders = await Order.findAll({where:{userId:id,isCancelled:true}});
-        var cancelledProducts = [];
-        var cancelledImages = [];
-        for (let i = 0; i<cancelledOrders.length;i++){
-            var canProductId = cancelledOrders[i].productId;
-            var cancelledProduct = await Product.findOne({where:{id:canProductId}});
-            var cancelledImage = await Image.findOne({where:{productId:canProductId}});
-            cancelledProducts.push(cancelledProduct);
-            cancelledImages.push(cancelledImage.imageUrl);
+    if(req.session.type==="user"){
+            var id = req.session.user.id
+            var orders = await Order.findAll({where:{userId:id,isCancelled:false,isDone:false}});   
+            var products = [];
+            var images = [];
+            for (var i = 0; i<orders.length;i++){
+                var productId = orders[i].productId;
+                var product = await Product.findOne({where:{id:productId}});
+                var image = await Image.findOne({where:{productId:productId}});
+                products.push(product);
+                images.push(image.imageUrl);
+            }
+            var cancelledOrders = await Order.findAll({where:{userId:id,isCancelled:true}});
+            var cancelledProducts = [];
+            var cancelledImages = [];
+            for (let i = 0; i<cancelledOrders.length;i++){
+                var canProductId = cancelledOrders[i].productId;
+                var cancelledProduct = await Product.findOne({where:{id:canProductId}});
+                var cancelledImage = await Image.findOne({where:{productId:canProductId}});
+                cancelledProducts.push(cancelledProduct);
+                cancelledImages.push(cancelledImage.imageUrl);
 
+            }
+            var completedOrders = await Order.findAll({where:{userId:id,isDone:true}});
+            var completedProducts = [];
+            var completedImages = [];
+            for (let i = 0; i< completedOrders.length;i++){
+                var comProductId =  completedOrders[i].productId;
+                var completedProduct = await Product.findOne({where:{id:comProductId}});
+                var completedImage = await Image.findOne({where:{productId:comProductId}});
+                completedProducts.push(completedProduct);
+                completedImages.push(completedImage.imageUrl);
+            }
+            
+            res.render('orderPage.ejs',
+            {
+                isAuthenticated:req.session.isAuthenticated,
+                orders:orders,
+                products:products,
+                images:images,
+                completedOrders:completedOrders,
+                completedProducts:completedProducts,
+                completedImages:completedImages,
+                cancelledOrders:cancelledOrders,
+                cancelledProducts:cancelledProducts,
+                cancelledImages,cancelledImages,
+                session:req.session,
+            });       
+
+        }else{
+            res.render('404Page.ejs');
         }
-        var completedOrders = await Order.findAll({where:{userId:id,isDone:true}});
-        var completedProducts = [];
-        var completedImages = [];
-        for (let i = 0; i< completedOrders.length;i++){
-            var comProductId =  completedOrders[i].productId;
-            var completedProduct = await Product.findOne({where:{id:comProductId}});
-            var completedImage = await Image.findOne({where:{productId:comProductId}});
-            completedProducts.push(completedProduct);
-            completedImages.push(completedImage.imageUrl);
-        }
-        console.log(completedOrders);
-        console.log(completedProducts);
-        
-        res.render('orderPage.ejs',
-        {
-            isAuthenticated:req.session.isAuthenticated,
-            orders:orders,
-            products:products,
-            images:images,
-            completedOrders:completedOrders,
-            completedProducts:completedProducts,
-            completedImages:completedImages,
-            cancelledOrders:cancelledOrders,
-            cancelledProducts:cancelledProducts,
-            cancelledImages,cancelledImages
-        });       
 
     }
 
@@ -312,7 +321,7 @@ exports.cancelledOrdersGet = async (req,res) => {
         var product = await Product.findOne({where:{id:cancelledOrders[i].productId}})
         products.push(product);
     }
-    res.render('cancelledOrder.ejs',{isAuthenticated:req.session.isAuthenticated,orders:cancelledOrders,products:products});
+    res.render('cancelledOrder.ejs',{isAuthenticated:req.session.isAuthenticated,orders:cancelledOrders,products:products,session:req.session,});
 }
 
 exports.completedOrdersGet = async (req,res) => {
@@ -326,7 +335,7 @@ exports.completedOrdersGet = async (req,res) => {
         var product = Product.findOne({where:{id:completedOrders[i].productId}})
         products.push(product);
     }
-    res.render('completedOrder.ejs',{isAuthenticated:req.session.isAuthenticated,orders:completedOrders,products:products})
+    res.render('completedOrder.ejs',{isAuthenticated:req.session.isAuthenticated,orders:completedOrders,products:products,session:req.session,})
 
 }
 
@@ -340,7 +349,7 @@ exports.textGet = async (req,res) => {
     var store = await Store.findOne({where:{id:storeId}});
     var user = await User.findOne({where:{id:userId}});
     var messages = await Message.findAll({where:{orderId:orderId}});
-    res.render('textPage.ejs',{isAuthenticated:req.session.isAuthenticated,store:store,user:user,messages:messages});
+    res.render('textPage.ejs',{isAuthenticated:req.session.isAuthenticated,store:store,user:user,messages:messages,session:req.session,});
 }
 
 exports.textPost = async (req,res) => {
@@ -381,7 +390,7 @@ exports.favouritePageGet = async (req,res) => {
         var product = await Product.findOne({where:{id:favourites[i].productId}});
         products.push(product);
     }
-    res.render('favouritePage.ejs',{isAuthenticated:req.session.isAuthenticated,products:products})
+    res.render('favouritePage.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,session:req.session,})
 
 }
 
@@ -419,7 +428,7 @@ exports.returnProductPost = async (req,res) => {
 
 exports.categoriesGet = async (req,res) => {
     var categories = await Category.findAll();
-    res.render('categories.ejs',{isAuthenticated:req.session.isAuthenticated,categories:categories});
+    res.render('categories.ejs',{isAuthenticated:req.session.isAuthenticated,categories:categories,session:req.session,});
 }
 
 exports.pCategoriesGet = async (req,res) => {
@@ -436,7 +445,7 @@ exports.pCategoriesGet = async (req,res) => {
         images.push(image.imageUrl);
     }
 
-    res.render('pCategory.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,category:category,stores:stores,images:images,url:url1});
+    res.render('pCategory.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,category:category,stores:stores,images:images,url:url1,session:req.session,});
 }
 
 exports.pFavouritePost = async (req,res) => {

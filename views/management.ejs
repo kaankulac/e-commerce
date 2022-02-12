@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/icons/storeicon.ico" type="image/x-icon" />
+    <title>Store Management</title>
+</head>
+<body>
+    <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
+    <link rel="stylesheet" href="css/management.css">
+
+    <div class="main" id="main">
+
+        
+    </div>
+    <div class="addProduct" id="addProduct">
+        <h4>Store ID: <%= session.user.storeId %> </h4>
+
+        <form action="/management/product/add" method="post">
+    
+        <div class="mainAddProduct" align="center">
+                    <div class="pName container1">
+                        <input type="text" name="pName" id="pName" placeholder="Product Name" required>
+                    </div>
+                    <div class="price container1">
+                        <input type="text" name="price" id="price" placeholder="Price" required>
+                    </div>
+                    <div class="year container1">
+                        <input type="text" name="releaseYear" id="releaseYear" placeholder="Release Year" required>
+                    </div>
+                    <div class="stock container1">
+                        <input type="text" name="stock" id="stock" placeholder="Stock" required>
+                    </div>
+                    <div class="description container1">
+                        <input type="text" name="description" id="description" placeholder="Description" required>
+                    </div>
+      
+                <div class="category container1">
+                    <select name="category" id="category">
+                        <% for( let i = 0; i < categoryNames.length; i++ ) { %>
+                            <option name="categoryOption" value="<%= categoryNames[i] %>"><%= categoryNames[i] %> </option>
+                        <% } %>
+                </select>
+    
+                </div>
+    
+                <div class="image container1" name="imageBox">
+                    <input type="text" name="image" id="image" placeholder="Image Url" required>
+                    <button type="button" name="addImage" id="addImage" onclick="addImg()">+</button>
+                    <div class="images" id="images">
+    
+                    </div>
+                    <p id="imageInformation" style="visibility:hidden;position:absolute">Click on the image you want to delete.</p>
+                </div>
+                <div class="tag container1" name="tagBox" id ="tagBox">
+                    <input type="text" name="tag" id="tag" placeholder="Tag Name" required>
+                    <button type="button" name="addTag" id="addTag" onclick="addTg()">+</button>
+                    <div class="tags" id="tags">
+    
+                    </div>
+                    <p id="information" style="visibility:hidden;position:absolute">Click on the tag you want to delete.</p>
+                </div>
+                <input type="text" name="textBox" id="textBox" style="visibility:hidden;position:absolute">
+                <input type="text" name="imageBox" id="imageBox" style="visibility:hidden;position:absolute">
+                <button type="submit">Save</button>
+    </div>
+</div>
+
+    <div class="products" id="products">
+        <div class="container">
+            <% if (products) { %>
+                <% for( let i = 0; i < products.length; i++ ) { %>
+                    <div class="product">
+                        <img class="img" src=<%= images[i] %>  alt="">
+                        <h3><%= products[i].productName %> </h4>
+                        <p>Price: <%= products[i].price %> $ </p>
+                        <p>Sales: <%= products[i].sales %></p>
+
+                        <form action="/management/product/delete/<%=products[i].id %>" method="post">
+                            <button class="cancelButton">Delete Order</button>        
+                        </form>
+                    </div>
+                <% } %>
+    
+    
+            <% }else{ %>
+            <p>Your haven't a product...</p>
+            <% } %> 
+        </div>
+</div>
+<div class="buttons">
+    <button class="btn1" type="button" onclick="productsFunc()">Products</button>
+    <button class="btn1" type="button" onclick="addProductFunc()">Add Products</button>
+    <button class="btn1" type="button" onclick="mainFunc()">Main</button>
+</div>
+
+</body>
+</html>
+
+<script>
+    var products = document.getElementById("products");
+    var main = document.getElementById("main");
+    var addProduct = document.getElementById("addProduct");
+    products.style.visibility = "hidden";
+    products.style.position = "absolute";
+    addProduct.style.visibility = "hidden";
+    addProduct.style.position = "absolute";
+    function productsFunc(){
+        products.style.visibility = "visible";
+        products.style.position = "static";
+        addProduct.style.visibility = "hidden";
+        addProduct.style.position = "absolute";
+        main.style.visibility = "hidden";
+        main.style.position = "absolute";
+    }
+
+    function addProductFunc(){
+        products.style.visibility = "hidden";
+        products.style.position = "absolute";
+        addProduct.style.visibility = "visible";
+        addProduct.style.position = "static";
+        main.style.visibility = "hidden";
+        main.style.position = "absolute";
+    }
+
+    function mainFunc(){
+        products.style.visibility = "hidden";
+        products.style.position = "absolute";
+        addProduct.style.visibility = "hidden";
+        addProduct.style.position = "absolute";
+        main.style.visibility = "visible";
+        main.style.position = "static";
+    }
+
+    function imageEdit(){
+        var imgs = "";
+        var imgBox = document.getElementById("imageBox");
+        var allImages = document.getElementsByTagName('img');
+        for (let i=0; i<allImages.length;i++){
+            if(allImages[i]){
+                var imgs = imgs+allImages[i].src+",";
+            }
+        }
+        imgBox.value = imgs;
+    }
+
+    function tagEdit(){
+        var tgs = "";
+        var tagBox = document.getElementById("textBox");
+        var allTags = document.getElementsByClassName("newTag");
+        for(let i = 0; i<allTags.length;i++){
+            if(allTags[i]){
+                tgs = tgs+allTags[i].innerHTML+',';
+            }
+        }
+        tagBox.value = tgs;
+
+    }
+    var tagCount = 0;
+    var imageCount = 0;
+    function addImg(){
+        if (imageCount<6){
+            var image = document.getElementById("image");
+            var img = document.createElement("img");
+            var images = document.getElementById("images");
+            var imageInformation = document.getElementById("imageInformation");
+            imageInformation.style.visibility = "visible";
+            imageInformation.style.position = "static";
+            img.name = "image";
+            img.src = image.value;
+            img.id = "newImg";
+            imageCount+=1;
+            images.appendChild(img);
+            imageEdit();
+
+
+        }else{
+            alert('En fazla 6 resim eklenebilir..')
+
+        }
+
+        img.addEventListener('click',() => {
+            imageCount-=1;
+            img.remove();
+            imageEdit();
+            if(imageCount===0){
+                imageInformation.style.visibility = "hidden";
+                imageInformation.style.position = "absolute"
+            }
+        })
+        
+    }
+    function addTg(){
+        if(tagCount<5){
+            var tag = document.getElementById("tag");
+            var newTag = document.createElement("div");
+            var tags = document.getElementById("tags");
+            var info = document.getElementById('information');
+            info.style.visibility = "visible";
+            info.style.position = "static";
+            newTag.className = "newTag";
+            newTag.id = "newTag";
+            newTag.innerHTML = tag.value;
+            tagCount+=1;
+            tags.appendChild(newTag);
+            tagEdit();
+
+        }else{
+            alert('En fazla 5 tane tag eklenebilir...')
+        }
+
+        newTag.addEventListener('click',() => {
+            newTag.remove();
+            tagCount-=1;
+            tagEdit();
+            if(tagCount===0){
+                info.style.position = "absolute";
+                info.style.visibility="hidden";
+            }
+        });
+        
+    }
+</script>

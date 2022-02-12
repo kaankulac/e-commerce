@@ -13,13 +13,12 @@ exports.storePageGet = async (req,res) => {
     if(count===1){
         var images = []
         var store = await Store.findOne({where:{pathName:storeName}});
-        var products = await Product.findAll({where:{storeId:store.id}});
-        var length = products.length;
-        for(var i = products[0].id;i<=products[length-1].id;i++){
-            var image = await Image.findOne({where:{productId:i}})
+        var products = await Product.findAll({where:{storeId:store.id,isDeleted:false}});
+        for(let i = 0; i<products.length;i++){
+            var image = await Image.findOne({where:{productId:products[i].id}})
             images.push(image.imageUrl);
         }
-        res.render("storePage.ejs",{store:store,products:products,images:images,isAuthenticated:req.session.isAuthenticated});
+        res.render("storePage.ejs",{store:store,products:products,images:images,isAuthenticated:req.session.isAuthenticated,session:req.session});
     }else{
         res.render('404Page.ejs');
     }

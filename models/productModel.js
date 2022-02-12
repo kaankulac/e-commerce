@@ -39,6 +39,10 @@ const Product = sequelize.define('Product',{
     categoryId:{
         type:DataTypes.INTEGER,
         allowNull:false
+    },
+    isDeleted:{
+        type:DataTypes.BOOLEAN,
+        allowNull:false
     }
 });
 

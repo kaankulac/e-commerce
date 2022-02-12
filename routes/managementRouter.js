@@ -35,8 +35,9 @@ router.use(session({
   saveUninitialized:false,
 
 }));
-router.get('/management/product/add',managementController.addProductGet);
-router.post('/management/product/add',managementController.addProductPost);
+router.get('/management',managementController.managementGet);
+router.post('/management/:request/:request2/:id',managementController.managementPost);
+router.post('/management/:request/:request2',managementController.managementPost);
 
 
 

@@ -60,7 +60,7 @@ exports.productPageGet = async (req,res) => {
             users.push(username)
         }
 
-        res.render('productPage.ejs',{favCount:productFavCount,product:product,isAuthenticated:req.session.isAuthenticated,images:images,comments:comments,users:users,rating:rating,isFavourite:isFavourite,isComment:isComment});
+        res.render('productPage.ejs',{favCount:productFavCount,product:product,isAuthenticated:req.session.isAuthenticated,images:images,comments:comments,users:users,rating:rating,isFavourite:isFavourite,isComment:isComment,session:req.session});
     }else{
         res.render('404Page.ejs');
     }
@@ -127,7 +127,6 @@ exports.productCommentPost = async (req,res) => {
         var productCount = await Comment.count({where:{productId:productId}});
         var productRating = productRate/productCount;
         var order = await Order.findOne({where:{productId:productId,userId:id,isComment:false}});
-        console.log(order.id)
         Order.update({
             isComment:true
         },{
@@ -154,7 +153,6 @@ exports.productCommentPost = async (req,res) => {
             storeRate+=sRate;
         }
         var storeRating = storeRate/storeCount;
-        console.log(storeRating);
         Store.update({
             rating:storeRating
         },

@@ -160,7 +160,7 @@ exports.userLoginPost = async (req,res) => {
 
 
 exports.passwordChangeGet = (req,res) => {
-    res.render('passwordChange.ejs',{isAuthenticated:req.session.isAuthenticated});
+    res.render('passwordChange.ejs',{session:req.session,isAuthenticated:req.session.isAuthenticated});
 }
 
 exports.passwordChangePost = async (req,res) => {
@@ -206,11 +206,11 @@ exports.passwordChangePost = async (req,res) => {
             req.session.user.password = hashedPassword;
         }
         console.log('succes')
-        res.render('passwordChange.ejs',{isAuthenticated:req.session.isAuthenticated});
+        res.render('passwordChange.ejs',{session:req.session,isAuthenticated:req.session.isAuthenticated});
 
     }else{
         console.log('error');
-        res.render('passwordChange.ejs',{isAuthenticated:req.session.isAuthenticated});
+        res.render('passwordChange.ejs',{session:req.session,isAuthenticated:req.session.isAuthenticated});
     }
 
 
@@ -235,7 +235,7 @@ exports.profilePageGet = async (req,res) => {
         }
         var user = await Seller.findOne({where:{id:req.session.user.id}});
     }
-    res.render('profilePage.ejs',{isAuthenticated:req.session.isAuthenticated,user:user,type:req.session.type,pMethod:pMethod});
+    res.render('profilePage.ejs',{session:req.session,isAuthenticated:req.session.isAuthenticated,user:user,type:req.session.type,pMethod:pMethod});
 }
 
 
@@ -246,7 +246,7 @@ exports.changeAdressGet = async (req,res) => {
     }else{
         var haveAdress = false;
     }
-    res.render('changeAdress.ejs',{isAuthenticated:req.session.isAuthenticated,haveAdress:haveAdress,user:user});
+    res.render('changeAdress.ejs',{isAuthenticated:req.session.isAuthenticated,haveAdress:haveAdress,user:user,session:req.session,});
 
 }
 
@@ -316,7 +316,7 @@ res.redirect('back')
 }
 
 exports.changeEmailGet = (req,res) => {
-    res.render('changeEmail.ejs',{isAuthenticated:req.session.isAuthenticated});
+    res.render('changeEmail.ejs',{isAuthenticated:req.session.isAuthenticated,session:req.session,});
 }
 
 exports.changeEmailPost = async (req,res) => {
@@ -353,7 +353,7 @@ exports.changeEmailPost = async (req,res) => {
     }
 
 exports.addPaymentMethodGet = (req,res) => {
-    res.render('changePaymentMethod.ejs',{isAuthenticated:req.session.isAuthenticated})
+    res.render('changePaymentMethod.ejs',{isAuthenticated:req.session.isAuthenticated,session:req.session})
 }
 
 exports.addPaymentMethodPost = async (req,res) => {
