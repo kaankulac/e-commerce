@@ -32,12 +32,14 @@ exports.userRegisterPost = async (req,res) =>{
             text: 'Account created!'
         };
 
-        emailExistance.check(req.body.email,async (err,result) => {
-            if(result){
+            if(helper.emailAuthenticator(req.body.email)){
                 if(req.body.account=='personal'){
                     var count = await User.count({where:{username:req.body.username}});
-                    var hashedPassword = await helper.hashElement(req.body.password); 
-                    if (count===0){
+                    var sellerCount = await Seller.count({where:{username:req.body.username}});
+                    var hashedPassword = await helper.hashElement(req.body.password);
+                    var mail = await Seller.count({where:{email:req.body.email}});
+                    var userMail = await User.count({where:{email:req.body.email}});
+                    if (count === 0 && sellerCount === 0 && mail === 0 && userMail === 0){
                         if (helper.passwordControl(req.body.password)){
                             const user = await User.create({
                                 username:req.body.username,
@@ -47,7 +49,7 @@ exports.userRegisterPost = async (req,res) =>{
                                 adress:req.body.adress
                             });
                 
-                            res.redirect('/login/user');
+                            res.redirect('/login');
                             transporter.sendMail(mailOptions, function(error, info){
                                 if (error) {
                                   console.log(error);
@@ -60,12 +62,15 @@ exports.userRegisterPost = async (req,res) =>{
                         }
         
                     }else{
-                        res.render('userRegister.ejs',{message:'Error! user is already exists'});
+                        res.render('userRegister.ejs',{message:'Error! username or email already exists'});
                     }
                     
                 }else{
                     var count = await Seller.count({where:{username:req.body.username}});
-                    if (count===0){
+                    var userCount = await User.count({where:{username:req.body.username}});
+                    var mail = await Seller.count({where:{email:req.body.email}});
+                    var userMail = await User.count({where:{email:req.body.email}});
+                    if (count===0 && userCount === 0 && mail === 0 && userMail === 0){
                         if (helper.passwordControl(req.body.password)){
                              var hashedPassword = await helper.hashElement(req.body.password);
 
@@ -81,7 +86,8 @@ exports.userRegisterPost = async (req,res) =>{
                                 const seller = await Seller.create({
                                     username:req.body.username,
                                     password:hashedPassword,
-                                    storeId:sellerStore.id
+                                    storeId:sellerStore.id,
+                                    email:req.body.email
                                 });
                                 res.render('userRegister.ejs',{message:'Succes'})
                             }else{
@@ -89,14 +95,15 @@ exports.userRegisterPost = async (req,res) =>{
                                 const seller = await Seller.create({
                                     username:req.body.username,
                                     password:hashedPassword,
-                                    storeId:sellerStore.id
+                                    storeId:sellerStore.id,
+                                    email:req.body.email
                                 });
-                                res.redirect('/login/seller');
+                                res.redirect('/login');
             
                         }
                     }
                     }else{
-                        res.render('userRegister.ejs',{message:'Error'});
+                        res.render('userRegister.ejs',{message:'Error! username or email already exist!'});
                     }
                     }
             }else{
@@ -104,7 +111,7 @@ exports.userRegisterPost = async (req,res) =>{
                 res.render('userRegister.ejs',{message:'Email does not exists!'});
             }
 
-        });
+        
  
         
 }

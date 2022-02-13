@@ -19,6 +19,10 @@ const Seller = sequelize.define('Seller',{
     adress:{
         type:DataTypes.STRING,
         allowNull:true
+    },
+    email:{
+        type:DataTypes.STRING,
+        allowNull:false
     }
 });
 
