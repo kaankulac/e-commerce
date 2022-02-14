@@ -25,13 +25,25 @@ exports.indexGet = async (req,res) => {
     if (helper.authentication(req.session)){
         var images = [];
         var products = await Product.findAll({where:{isDeleted:false}});
+        var pathname = [];
         var length = products.length;
+        var favourites = [];
         var store = await Store.findAll();
+        var storeNames = [];
         for(let i = 0; i<products.length;i++){
             var image = await Image.findOne({where:{productId:products[i].id}});
+            var storePathname = await Store.findOne({where:{id:products[i].storeId}});
+            var favourite = await Favourite.count({where:{productId:products[i].id,userId:req.session.user.id}});
+            if (favourite>0){
+                favourites.push(true);
+            }else{
+                favourites.push(false);
+            }
+            pathname.push(storePathname.pathName);
             images.push(image.imageUrl);
+            storeNames.push(storePathname.storeName)
         }
-        res.render('index.ejs',{isAuthenticated:req.session.isAuthenticated,products:products,images:images,stores:store,url:url1,session:req.session});
+        res.render('index.ejs',{isAuthenticated:req.session.isAuthenticated,favourites:favourites,products:products,images:images,stores:store,storeNames:storeNames,url:url1,session:req.session,pathnames:pathname});
     }else{
         res.redirect('/login'); // you must be logged in to access this page
     }
@@ -451,7 +463,8 @@ exports.pCategoriesGet = async (req,res) => {
 exports.pFavouritePost = async (req,res) => {
     var count = await Favourite.count({where:{userId:req.session.user.id,productId:req.body.button}})
     if (count>0){
-        console.log('you already added the favourite this product')
+        var favourite = await Favourite.findOne({where:{productId:req.body.button,userId:req.session.user.id}});
+        favourite.destroy();
         res.redirect('back');
     }else{
         var favourite = await Favourite.create({

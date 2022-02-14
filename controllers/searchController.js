@@ -21,6 +21,6 @@ exports.searchGet = async (req,res) => {
             results.push(result[i]);
         }
     }
-    res.render('searchPage.ejs',{isAuthenticated:req.session.isAuthenticated,products:results})
+    res.render('searchPage.ejs',{isAuthenticated:req.session.isAuthenticated,products:results,session:req.session})
 
 }

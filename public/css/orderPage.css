@@ -91,3 +91,24 @@ h3 {
     box-shadow: 5px 5px 5px black;
 }
 
+.div_a{
+    text-decoration: none;
+    color:white;
+}
+
+.div_a:hover{
+    text-decoration: none;
+    color:white;
+}
+
+.storeName{
+    color:#7790BF;
+}
+
+.storeName:hover{
+    text-decoration: none;
+    color:white;
+}
+
+
+
