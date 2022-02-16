@@ -1,0 +1,32 @@
+body {
+    background-color: #BAC7CC;
+}
+
+.changePasswordBox {
+    visibility: hidden;
+    position: absolute;
+
+}
+
+.changePasswordBox input[type="password"]{
+    display:block;
+    margin-top:10px;
+}
+
+button {
+    border-radius: 25px;
+    font-size: 20px;
+}
+
+button:hover {
+    box-shadow: 5px 5px 5px black;
+    background-color:gray;
+}
+
+p {
+    font-size: 20px;
+}
+
+input {
+    margin:5px;
+}

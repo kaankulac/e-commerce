@@ -8,40 +8,216 @@
 </head>
 <body>
     <%- include('./layouts/_navbar.ejs',{isAuthenticated:isAuthenticated}) %>
-    
-    <% if (type==="user") { %>      
-        <h2>Username: <%= user.username %> </h2>
-        <p>Full Name: <%= user.fullName %> </p>
-        <p>Email: <%= user.email %> </p>
-        <button><a href="profile/change/email">Change Email</a></button>
-        <p>Adress: <%= user.adress %> </p>
-        <button><a href="profile/change/adress">Edit or Add Adress</a></button>
-        <h1>Security</h1>
-        <p>Password</p>
-        <button><a href="profile/change/password">Change Password</a></button>
-        <h1>Payment Methods</h1>
-        <% if (pMethod) { %>
-            <p>Card Number: <%= pMethod.cardNumber %> </p>
-            <p>CVV: <%= pMethod.cvv %>  </p>
-            <p>Exprition Date: <%= pMethod.expritionDate %> </p>
-            <form action="/profile/change/paymentmethod/delete" method="POST">
-                <button type="submit">Delete Payment Method</button>
-            </form>
-        <% }else{ %>
-            <p>You don't have a payment method. Please add one...</p>
-            <button><a href="profile/change/paymentmethod">Add Payment Method</a></button>
+    <link rel="stylesheet" href="css/profilePage.css">
+    <div class="main" align="center">
+        <% if (type==="user") { %>
+            <h1 align="center"> Personal</h1>
+            <h2>Username: <%= user.username %> </h2>
+            <p>Full Name: <%= user.fullName %> </p>
+            <p>Email: <%= user.email %> </p>
+            <button id="changeEmail" onclick="changeEmailFunc()">Change Email</button>
+            <div class="changeEmailBox" style="visibility:hidden;position:absolute;margin-top:10px" id="changeEmailBox">
+                <form action="/profile/email/change" method="post">
+                    <input type="email" name="email" id="email" required>
+                    <button type="submit">Change Email</button>
+                </form>
+
+            </div>
+            <% if (user.adress) { %>
+                <p>Adress: <%= user.adress %> </p><form action="/profile/adress/edit" method="post"><button type="button" id="editAdressBtn" style="display:inline;">Edit</button></form>
+                <button value="true" id="editAdress" type="button" onclick="editAdressFunc()"> Edit or delete adress</button>
+            <% }else{ %>
+                <p>You don't have an adress. Please add one.</p> 
+                <button value="false" id="editAdress" type="button" onclick="editAdressFunc()">Add Adress</button>
+                
+
+            <% } %>
+            <div id="editAdressBox" style="visibility:hidden;position:absolute;margin-top:10px;" class="editAdressBox">
+                <% if(user.adress){ %>
+                    <form action="/profile/adress/delete" method="post">
+                        <button type="submit">Delete Adress</button>
+                    </form>
+                <% }else{ %>
+                <form action="/profile/adress/add" method="post">
+                    <input type="text" name="adress" id="adress" placeholder="Adress" required>
+                    <button type="submit">Add Adress</button>
+                </form>
+                </div>  
             <% } %> 
+            <h1 align="center">Security</h1>
+            <p>Password</p>
+            <button type="button" id="changePassword" onclick="changePasswordFunc()" >Change Password</button>
+            <div class="changePasswordBox" id="changePasswordBox">
+                <form action="/profile/password/change" method="post">
+                    <input type="password" name="password" id="password" placeholder="Password" required>
+                    <input type="password" name="newPassword" id="newPassword" placeholder="New Password" required>
+                    <input type="password" name="re-newPassword" id="re-newPassword" placeholder="Re-New Password" required>
+                    <button type="submit">Change Password</button>
+                </form>
 
-    <% }else{ %>
-
-        <h2>Username: <%= user.username %> </h2>
-        <p>Email: <%= user.email %> </p>
-        <button><a href="profile/change/email">Change Email</a></button>
-        <p>Adress: <%= user.adress %> </p>
-        <button><a href="profile/change/adress">Edit or Add Adress</a></button>
-        <h1>Security</h1>
-        <p>Password</p>
-        <button><a href="profile/change/password">Change Password</a></button>
-    <% } %> 
+            </div>
+            <h1 align="center">Payment Methods</h1>
+            <% if (pMethod) { %>
+                <p>Card Number: <%= pMethod.cardNumber %> </p>
+                <p>CVV: <%= pMethod.cvv %>  </p>
+                <p>Exprition Date: <%= pMethod.expritionDate %> </p>
+                <form action="/profile/change/paymentmethod/delete" method="POST">
+                    <button type="submit">Delete Payment Method</button>
+                </form>
+            <% }else{ %>
+                <p>You don't have a payment method. Please add one...</p>
+                <button id="addPMethod" type="button" onclick="addPMethodFunc()">Add Payment Method</button>
+                <div class="addPMethodBox" id="addPMethodBox" style="visibility:hidden;position:absoulte;margin-top:10px;">
+                    <form action="/profile/card/add" method="post">
+                    <input type="text" name="cardNumber" id="cardNumber" placeholder="Card Number" style="display:block" required>
+                    <select name="month" >
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <select name="year">
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                        <option value="2031">2031</option>
+                        <option value="2032">2032</option>
+                        <option value="2033">2033</option>
+                        <option value="2034">2034</option>
+                        <option value="2035">2035</option>
+                    
+                    </select>
+                    <input type="text" name="cvv" id="cvv" style="display:block" placeholder="CVV" required>
+                    <button type="submit">Add Payment Method</button>
+                </form>
+                </div>
+                <% } %> 
+    
+        <% }else{ %>
+    
+            <h2>Username: <%= user.username %> </h2>
+            <p>Email: <%= user.email %> </p>
+            <button type="button"><a href="profile/change/email">Change Email</a></button>
+            <p>Adress: <%= user.adress %> </p>
+            <button type="button"><a href="profile/change/adress">Edit or Add Adress</a></button>
+            <h1>Security</h1>
+            <p>Password</p>
+            <button type="button"><a href="profile/change/password">Change Password</a></button>
+        <% } %> 
+    </div>
+    
 </body>
 </html>
+
+<script>
+    var changePassword = document.getElementById("changePassword");
+    var changePasswordBox = document.getElementById("changePasswordBox");
+    var editAdressBox = document.getElementById("editAdressBox");
+    var editAdress = document.getElementById("editAdress");
+    var changeEmailBtn = document.getElementById("changeEmail");
+    var changeEmailBox = document.getElementById("changeEmailBox");
+    var addPMethodBtn = document.getElementById("addPMethod");
+    var addPMethodBox = document.getElementById("addPMethodBox");
+
+
+    function changePasswordFunc(){
+        changePasswordBox.style.visibility = "visible";
+        changePasswordBox.style.position = "static";
+        changePassword.style.backgroundColor = "black";
+        changePassword.style.color = "white";
+        changePassword.onclick = changePasswordFuncReverse;
+    }
+
+    function changePasswordFuncReverse(){
+        changePasswordBox.style.visibility = "hidden";
+        changePasswordBox.style.position = "absolute";
+        changePassword.style.backgroundColor = "white";
+        changePassword.style.color = "black";
+        changePassword.onclick = changePasswordFunc;
+    }
+
+    function editAdressFunc(){
+        if(editAdressBtn==="true"){
+            var editAdressBtn = document.getElementById("editAdressBtn");
+            editAdressBtn.style.visibility = "visible";
+            editAdressBox.style.visibility = "visible";
+            editAdressBtn.style.position = "static";
+            editAdressBox.style.position = "static";
+            editAdress.style.backgroundColor = "black";
+            editAdress.style.color = "white";
+        }else{
+            editAdressBox.style.position = "static";
+            editAdressBox.style.visibility = "visible";
+            editAdress.style.backgroundColor = "black";
+            editAdress.style.color = "white";
+
+        }
+        editAdress.onclick = editAdressFuncReverse;
+
+    }
+
+    function editAdressFuncReverse(){
+        if(editAdressBtn==="true"){
+            var editAdressBtn = document.getElementById("editAdressBtn");
+            editAdressBtn.style.visibility = "hidden";
+            editAdressBox.style.visibility = "hidden";
+            editAdressBtn.style.position = "absolute";
+            editAdressBox.style.position = "absolute";
+            editAdress.style.backgroundColor = "white";
+            editAdress.style.color = "black";
+        }else{
+            editAdressBox.style.position = "absolute";
+            editAdressBox.style.visibility = "hidden";
+            editAdress.style.backgroundColor = "white";
+            editAdress.style.color = "black";
+        }
+
+        editAdress.onclick = editAdressFunc;
+    }
+
+    function changeEmailFunc(){
+        changeEmailBox.style.visibility = "visible";
+        changeEmailBox.style.position = "static";
+        changeEmailBtn.style.backgroundColor = "black";
+        changeEmailBtn.style.color = "white";
+        changeEmailBtn.onclick = changeEmailFuncReverse;
+    }
+
+    function changeEmailFuncReverse(){
+        changeEmailBox.style.visibility = "hidden";
+        changeEmailBox.style.position = "absolute";
+        changeEmailBtn.style.backgroundColor = "white";
+        changeEmailBtn.style.color = "black";
+        changeEmailBtn.onclick = changeEmailFunc;
+    }
+
+    function addPMethodFunc(){
+        addPMethodBox.style.visibility = "visible";
+        addPMethodBox.style.position  = "static";
+        addPMethodBtn.style.backgroundColor = "black";
+        addPMethodBtn.style.color = "white";
+        addPMethodBtn.onclick = addPMethodFuncReverse;
+    }
+
+    function addPMethodFuncReverse(){
+        addPMethodBox.style.visibility = "hidden";
+        addPMethodBox.style.position  = "absolute";
+        addPMethodBtn.style.backgroundColor = "white";
+        addPMethodBtn.style.color = "black";
+        addPMethodBtn.onclick = addPMethodFunc;
+    }
+</script>
