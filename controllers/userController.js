@@ -166,59 +166,39 @@ exports.userLoginPost = async (req,res) => {
 }
 
 
-exports.passwordChangeGet = (req,res) => {
-    res.render('passwordChange.ejs',{session:req.session,isAuthenticated:req.session.isAuthenticated});
-}
 
 exports.passwordChangePost = async (req,res) => {
     var validPassword = await bcrypt.compare(req.body.password,req.session.user.password);
     if(validPassword){
-        var hashedPassword = await helper.hashElement(req.body.newPassword); 
-        var id = req.session.user.id;
-        if(req.session.type == "user"){
-            var user = await User.findOne({where:{id:id}});
-            User.update({
-                password:hashedPassword
-            },
-            {
-                returning:true, where: {id:id}
+        if (req.body.newPassword === req.body.reNewPassword){
+            var hashedPassword = await helper.hashElement(req.body.newPassword); 
+            var id = req.session.user.id;
+            if(req.session.type == "user"){
+                var user = await User.findOne({where:{id:id}});
+                User.update({
+                    password:hashedPassword
+                },
+                {
+                    returning:true, where: {id:id}
+                }
+                )
+                req.session.user.password = hashedPassword;              
+    
+            }else{
+                Seller.update({
+                    password:hashedPassword
+                },{
+                    returning:true,where: {id:id}
+                })
+                req.session.user.password = hashedPassword;
             }
-            )
-            req.session.user.password = hashedPassword;
-            var transporter = mailer.createTransport({
-                service: 'gmail',
-                auth: {
-                user: 'kaankulac5555@gmail.com',
-                pass: '234234234k'
-                }
-            });
-            
-            var mailOptions = {
-                from: 'kaankulac5555@gmail.com',
-                to: req.session.user.email,
-                subject: 'Succes',
-                text: 'Password changed...'
-            };
-            transporter.sendMail(mailOptions,(error,info)=>{
-                if(error){
-                    console.log(error);
-                }else{
-                    console.log("email sent: "+info.response);
-                }
-            })
-
         }else{
-            var seller = await Seller.findOne({where:{id:id}});
-            seller.password= hashedPassword;
-            req.session.user.password = hashedPassword;
+            console.log("Yeni şifreleriniz uyuşmuyor.")
         }
-        console.log('succes')
-        res.render('passwordChange.ejs',{session:req.session,isAuthenticated:req.session.isAuthenticated});
-
     }else{
-        console.log('error');
-        res.render('passwordChange.ejs',{session:req.session,isAuthenticated:req.session.isAuthenticated});
+        console.log("Güncel şifrenizi yanlış girdiniz.")
     }
+    res.redirect('back');
 
 
 }
@@ -246,17 +226,6 @@ exports.profilePageGet = async (req,res) => {
 }
 
 
-exports.changeAdressGet = async (req,res) => {
-    var user = await User.findOne({where:{id:req.session.user.id}})
-    if(user.adress){
-        var haveAdress = true;
-    }else{
-        var haveAdress = false;
-    }
-    res.render('changeAdress.ejs',{isAuthenticated:req.session.isAuthenticated,haveAdress:haveAdress,user:user,session:req.session,});
-
-}
-
 exports.changeAdressPost = async (req,res) => {
     if (req.session.type === "user"){
         if(req.param('action')==="add"){
@@ -280,43 +249,13 @@ exports.changeAdressPost = async (req,res) => {
         }else if(req.param('action')==="edit"){
             User.update(
                 {
-                    adress:req.body.cadress
+                    adress:req.body.adressInput
                 },
                 {
                     returning:true,where:{id:req.session.user.id}
                 }
                 )
-        }else{
-            if(req.param('action')==="add"){
-                Seller.update(
-                    {
-                        adress:req.body.adress
-                    },
-                    {
-                        returning:true,where:{id:req.session.user.id}
-                    }
-                    )
-            }else if(req.param('action')==="delete"){
-                Seller.update(
-                    {
-                        adress:null
-                    },
-                    {
-                        returning:true,where:{id:req.session.user.id}
-                    }
-                    )
-            }else if(req.param('action')==="edit"){
-                Seller.update(
-                    {
-                        adress:req.body.cadress
-                    },
-                    {
-                        returning:true,where:{id:req.session.user.id}
-                    }
-                    )
-        }
-    
-    }
+            }
 
 }
 res.redirect('back')

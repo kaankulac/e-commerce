@@ -43,13 +43,11 @@ router.get('/login',userController.userLoginGet);
 router.post('/login',userController.userLoginPost);
 
 
-router.get('/profile/change/password',userController.passwordChangeGet);
-router.post('/profile/change/password',userController.passwordChangePost);
+router.post('/profile/password/change',userController.passwordChangePost);
 
 router.get('/profile',userController.profilePageGet);
 
-router.get('/profile/change/adress',userController.changeAdressGet);
-router.post('/profile/change/adress/:action',userController.changeAdressPost);
+router.post('/profile/adress/:action/',userController.changeAdressPost);
 
 router.get('/profile/change/email',userController.changeEmailGet);
 router.post('/profile/change/email',userController.changeEmailPost);

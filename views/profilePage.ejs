@@ -24,7 +24,11 @@
 
             </div>
             <% if (user.adress) { %>
-                <p>Adress: <%= user.adress %> </p><form action="/profile/adress/edit" method="post"><button type="button" id="editAdressBtn" style="display:inline;">Edit</button></form>
+                <p id="adressText">Adress: <%= user.adress %> </p>
+                <form action="/profile/adress/edit" method="post" id="saveAdress" style="visibility:hidden;position:absolute">
+                    <input type="text" name="adressInput" id="editAdressText" placeholder="Adress" required style="visibility:hidden;display:block;position:absolute">
+                    <button type="submit">Save</button>
+                </form>
                 <button value="true" id="editAdress" type="button" onclick="editAdressFunc()"> Edit or delete adress</button>
             <% }else{ %>
                 <p>You don't have an adress. Please add one.</p> 
@@ -34,16 +38,20 @@
             <% } %>
             <div id="editAdressBox" style="visibility:hidden;position:absolute;margin-top:10px;" class="editAdressBox">
                 <% if(user.adress){ %>
+                    <button type="button" id="editAdressBtn" onclick="adressInputFunc()" style="visibility:hidden;position:absolute;">Edit</button>
                     <form action="/profile/adress/delete" method="post">
                         <button type="submit">Delete Adress</button>
                     </form>
+
+            </div>  
+
                 <% }else{ %>
                 <form action="/profile/adress/add" method="post">
                     <input type="text" name="adress" id="adress" placeholder="Adress" required>
                     <button type="submit">Add Adress</button>
                 </form>
-                </div>  
-            <% } %> 
+            </div>  
+                <% } %> 
             <h1 align="center">Security</h1>
             <p>Password</p>
             <button type="button" id="changePassword" onclick="changePasswordFunc()" >Change Password</button>
@@ -51,7 +59,7 @@
                 <form action="/profile/password/change" method="post">
                     <input type="password" name="password" id="password" placeholder="Password" required>
                     <input type="password" name="newPassword" id="newPassword" placeholder="New Password" required>
-                    <input type="password" name="re-newPassword" id="re-newPassword" placeholder="Re-New Password" required>
+                    <input type="password" name="reNewPassword" id="reNewPassword" placeholder="Re-New Password" required>
                     <button type="submit">Change Password</button>
                 </form>
 
@@ -107,17 +115,8 @@
                 </div>
                 <% } %> 
     
-        <% }else{ %>
+        <% }%>
     
-            <h2>Username: <%= user.username %> </h2>
-            <p>Email: <%= user.email %> </p>
-            <button type="button"><a href="profile/change/email">Change Email</a></button>
-            <p>Adress: <%= user.adress %> </p>
-            <button type="button"><a href="profile/change/adress">Edit or Add Adress</a></button>
-            <h1>Security</h1>
-            <p>Password</p>
-            <button type="button"><a href="profile/change/password">Change Password</a></button>
-        <% } %> 
     </div>
     
 </body>
@@ -151,7 +150,7 @@
     }
 
     function editAdressFunc(){
-        if(editAdressBtn==="true"){
+        if(editAdress.value==="true"){
             var editAdressBtn = document.getElementById("editAdressBtn");
             editAdressBtn.style.visibility = "visible";
             editAdressBox.style.visibility = "visible";
@@ -171,7 +170,7 @@
     }
 
     function editAdressFuncReverse(){
-        if(editAdressBtn==="true"){
+        if(editAdress.value ==="true"){
             var editAdressBtn = document.getElementById("editAdressBtn");
             editAdressBtn.style.visibility = "hidden";
             editAdressBox.style.visibility = "hidden";
@@ -219,5 +218,42 @@
         addPMethodBtn.style.backgroundColor = "white";
         addPMethodBtn.style.color = "black";
         addPMethodBtn.onclick = addPMethodFunc;
+    }
+
+    function adressInputFunc(){
+        var editAdressBtn = document.getElementById("editAdressBtn");
+        var editAdress = document.getElementById("editAdressText");
+        var adressText = document.getElementById("adressText");
+        var saveAdress = document.getElementById("saveAdress");
+
+        adressText.style.visibility = "hidden";
+        adressText.style.position = "absolute";
+
+        editAdress.style.visibility = "visible";
+        editAdress.style.position = "static";
+
+        saveAdress.style.visibility = "visible";
+        saveAdress.style.position = "static";
+
+        editAdressBtn.onclick = adressInputFuncReverse;
+
+    }
+
+    function adressInputFuncReverse(){
+        var editAdressBtn = document.getElementById("editAdressBtn");
+        var editAdress = document.getElementById("editAdressText");
+        var adressText = document.getElementById("adressText");
+        var saveAdress = document.getElementById("saveAdress");
+
+        adressText.style.visibility = "visible";
+        adressText.style.position = "static";
+
+        editAdress.style.visibility = "hidden";
+        editAdress.style.position = "absolute";
+
+        saveAdress.style.visibility = "hidden";
+        saveAdress.style.position = "absolute";
+
+        editAdressBtn.onclick = adressInputFunc;
     }
 </script>
